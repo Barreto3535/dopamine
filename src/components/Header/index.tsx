@@ -6,7 +6,8 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.content}>
         <Link to="/" className={styles.logo}>
-          FocusQuest
+          <span className={styles.logoMark}>FQ</span>
+          <span className={styles.logoText}>FocusQuest</span>
         </Link>
 
         <nav className={styles.nav}>
@@ -16,6 +17,10 @@ export default function Header() {
 
           <Link to="/login" className={styles.link}>
             Entrar
+          </Link>
+
+          <Link to="/login" className={styles.cta}>
+            Criar conta
           </Link>
         </nav>
       </div>

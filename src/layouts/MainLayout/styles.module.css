@@ -1,8 +1,9 @@
 .layout {
   min-height: 100vh;
-  background: var(--color-background, #f9fafb);
+  background: var(--color-background);
 }
 
 .main {
-  padding: 24px 0;
+  width: 100%;
+  padding: var(--space-6) 0;
 }

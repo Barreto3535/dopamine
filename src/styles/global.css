@@ -1,0 +1,181 @@
+:root {
+  /* Tipografia */
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Cores principais */
+  --color-primary: #58cc02;
+  --color-primary-dark: #46a302;
+  --color-primary-light: #89e219;
+
+  --color-secondary: #1cb0f6;
+  --color-secondary-dark: #1395d4;
+  --color-secondary-light: #7dd3fc;
+
+  /* Fundo e superfícies */
+  --color-background: #f7f8fb;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f9fafb;
+  --color-surface-muted: #f3f4f6;
+
+  /* Texto */
+  --color-text: #111827;
+  --color-text-secondary: #374151;
+  --color-text-muted: #6b7280;
+  --color-text-soft: #9ca3af;
+
+  /* Bordas */
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+
+  /* Feedback */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Sombras */
+  --shadow-sm: 0 4px 10px rgba(17, 24, 39, 0.04);
+  --shadow-md: 0 10px 24px rgba(17, 24, 39, 0.08);
+  --shadow-lg: 0 20px 40px rgba(17, 24, 39, 0.12);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  /* Espaçamento */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Largura */
+  --container-width: 1200px;
+
+  /* Transições */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+
+  /* Suporte ao navegador */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reset básico */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Elementos básicos */
+img,
+picture,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+textarea,
+select,
+button {
+  outline: none;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+}
+
+/* Tipografia base */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+p {
+  color: var(--color-text-secondary);
+}
+
+/* Listas */
+ul,
+ol {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* Acessibilidade */
+:focus-visible {
+  outline: 3px solid rgba(28, 176, 246, 0.35);
+  outline-offset: 2px;
+}
+
+/* Seleção */
+::selection {
+  background: rgba(88, 204, 2, 0.2);
+  color: var(--color-text);
+}
