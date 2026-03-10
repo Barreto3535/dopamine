@@ -6,7 +6,7 @@ import { supabase } from "./lib/supabaseClient";
 
 import MainLayout from "./layouts/MainLayout";
 
-// Páginas
+// Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -24,49 +24,88 @@ function ProtectedRoute({ session, children }: ProtectedRouteProps) {
   return <>{children}</>;
 }
 
+function PublicOnlyRoute({
+  session,
+  children,
+}: ProtectedRouteProps) {
+  if (session) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+}
+
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
+    let isMounted = true;
+
+    async function getInitialSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (isMounted) {
+        setSession(session);
+        setLoading(false);
+      }
+    }
+
+    getInitialSession();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
-    return <div>carregando...</div>;
+    return <div>Carregando...</div>;
   }
 
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rotas públicas com layout */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute session={session}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
         </Route>
 
+        {/* Rotas públicas sem layout */}
+        <Route
+          path="/login"
+          element={
+            <PublicOnlyRoute session={session}>
+              <Login />
+            </PublicOnlyRoute>
+          }
+        />
+
+        {/* Rotas protegidas */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute session={session}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fallback */}
         <Route
           path="*"
-          element={<Navigate to={session ? "/dashboard" : "/"} replace />}
+          element={
+            <Navigate to={session ? "/dashboard" : "/"} replace />
+          }
         />
       </Routes>
     </BrowserRouter>
