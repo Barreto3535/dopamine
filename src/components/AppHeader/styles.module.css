@@ -25,3 +25,9 @@
   padding: 8px 14px;
   font-weight: 600;
 }
+
+@media (min-width: 1024px) {
+  .header {
+    display: none;
+  }
+}

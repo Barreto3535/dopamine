@@ -1,0 +1,86 @@
+.sidebar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 260px;
+    min-height: 100vh;
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  .logoMark {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-secondary) 100%
+    );
+    color: var(--color-surface);
+    font-weight: 800;
+  }
+
+  .brandTitle {
+    display: block;
+    color: var(--color-text);
+    font-size: 1rem;
+  }
+
+  .brandText {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+  }
+
+  .link {
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    padding: 0 var(--space-4);
+    display: flex;
+    align-items: center;
+    color: var(--color-text-secondary);
+    background: transparent;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .active {
+    background: rgba(88, 204, 2, 0.12);
+    color: var(--color-primary-dark);
+  }
+
+  .logoutButton {
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+    color: var(--color-text-secondary);
+    font-weight: 700;
+  }
+}

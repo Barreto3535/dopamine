@@ -3,6 +3,17 @@
   background: var(--color-background);
 }
 
+.contentArea {
+  min-width: 0;
+}
+
 .main {
-  padding: var(--space-6) 0;
+  padding: var(--space-5) 0 var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+  }
 }
