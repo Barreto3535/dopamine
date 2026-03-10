@@ -90,16 +90,17 @@ export default function App() {
           }
         />
 
-        {/* Rotas protegidas */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute session={session}>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
+        {/* Rotas protegidas com layout*/}
+        <Route element={<MainLayout />}>
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute session={session}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
         {/* Fallback */}
         <Route
           path="*"

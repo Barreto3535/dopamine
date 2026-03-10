@@ -1,0 +1,337 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-2) 0 var(--space-8);
+}
+
+/* HERO */
+
+.heroCard {
+  background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  box-shadow: var(--shadow-md);
+}
+
+.heroTop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.greeting {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.title {
+  font-size: 1.85rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.levelBadge,
+.streakBadge {
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.levelBadge {
+  background: rgba(59, 130, 246, 0.14);
+  color: var(--color-info);
+}
+
+.streakBadge {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--color-success);
+}
+
+.xpBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.xpInfo {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.xpInfo strong {
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 12px;
+  background: rgba(17, 24, 39, 0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
+  border-radius: var(--radius-full);
+}
+
+/* MISSION */
+
+.mainMission {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.missionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.sectionTag {
+  background: rgba(88, 204, 2, 0.12);
+  color: var(--color-primary-dark);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.missionSteps {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.missionTitle {
+  font-size: 1.6rem;
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.missionText {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.missionProgressBar {
+  width: 100%;
+  height: 12px;
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.missionProgressFill {
+  width: 40%;
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 46px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+}
+
+.primaryButton {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.secondaryButton {
+  background: var(--color-secondary);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+/* STATS */
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.statCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.statLabel {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.statValue {
+  font-size: 1.4rem;
+  color: var(--color-text);
+}
+
+.statText {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* BOTTOM GRID */
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.listCard,
+.focusCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.cardHeader h3 {
+  font-size: 1.15rem;
+  color: var(--color-text);
+}
+
+.cardHeaderTag {
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.taskItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-soft);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+}
+
+.taskDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.focusCard {
+  background: linear-gradient(135deg, #ecfeff 0%, #f0fdf4 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.focusTag {
+  width: fit-content;
+  background: rgba(28, 176, 246, 0.12);
+  color: var(--color-secondary-dark);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.focusTitle {
+  font-size: 1.4rem;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.focusText {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* DESKTOP */
+
+@media (min-width: 768px) {
+  .heroTop {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bottomGrid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+}
