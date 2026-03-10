@@ -10,6 +10,7 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import AppLayout from './layouts/AppLayout';
 
 type ProtectedRouteProps = {
   session: Session | null;
@@ -91,7 +92,7 @@ export default function App() {
         />
 
         {/* Rotas protegidas com layout*/}
-        <Route element={<MainLayout />}>
+        <Route element={<AppLayout />}>
           <Route
             path="/dashboard"
             element={

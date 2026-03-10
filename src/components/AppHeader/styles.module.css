@@ -1,0 +1,27 @@
+.header {
+  width: 100%;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.content {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 800;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.logoutButton {
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-weight: 600;
+}
