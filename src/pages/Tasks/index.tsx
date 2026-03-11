@@ -7,6 +7,7 @@ import {
   setMainTask,
 } from "../../services/tasksService";
 import type { Task, TaskEnergyLevel } from "../../types/task";
+import { Link } from 'react-router-dom';
 
 export default function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -239,7 +240,9 @@ export default function Tasks() {
                   </button>
                 </div>
 
-                <h3 className={styles.taskTitle}>{task.title}</h3>
+                <Link to={`/tasks/${task.id}`} className={styles.taskTitleLink}>
+                  <h3 className={styles.taskTitle}>{task.title}</h3>
+                </Link>
 
                 <p className={styles.taskDescription}>
                   {task.description?.trim()

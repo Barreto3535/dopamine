@@ -230,3 +230,6 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+.taskTitleLink {
+  text-decoration: none;
+}
