@@ -10,6 +10,7 @@ export type ShopItem = {
   icon: string | null;
   is_consumable: boolean;
   is_active: boolean;
+  theme_id?: string | null;
   created_at: string;
 };
 
