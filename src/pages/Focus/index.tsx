@@ -3,23 +3,33 @@ import styles from "./styles.module.css";
 import { listTasks } from "../../services/tasksService";
 import { registerFocusSession } from "../../services/focusSessionsService";
 import type { Task } from "../../types/task";
+import type { ActiveFocusSession } from "../../types/activeFocusSession";
+import {
+  clearActiveFocusSession,
+  createActiveFocusSession,
+  getActiveFocusSession,
+  getRemainingSeconds,
+  pauseActiveFocusSession,
+  resumeActiveFocusSession,
+  saveActiveFocusSession,
+} from "../../services/activeFocusSessionService";
 
 const DEFAULT_MINUTES = 25;
+const DEFAULT_TITLE = "FocusQuest";
 
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60)
     .toString()
     .padStart(2, "0");
-
   const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-
-  return `${minutes}:${seconds}`;
+  // O erro estava aqui: faltando o $ antes da primeira chave.
+  return `${minutes}:${seconds}`; 
 }
+
 
 export default function Focus() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string>("");
-
   const [durationMinutes, setDurationMinutes] = useState(DEFAULT_MINUTES);
 
   const [loading, setLoading] = useState(true);
@@ -28,13 +38,13 @@ export default function Focus() {
 
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-
   const [remainingSeconds, setRemainingSeconds] = useState(
     DEFAULT_MINUTES * 60
   );
-
-  const [startedAt, setStartedAt] = useState<string | null>(null);
   const [sessionFinished, setSessionFinished] = useState(false);
+  const [activeSession, setActiveSession] = useState<ActiveFocusSession | null>(
+    null
+  );
 
   const intervalRef = useRef<number | null>(null);
 
@@ -45,10 +55,31 @@ export default function Focus() {
         setError(null);
 
         const data = await listTasks();
-
         const openTasks = data.filter((task) => task.status !== "completed");
 
         setTasks(openTasks);
+
+        const storedSession = getActiveFocusSession();
+
+        if (storedSession) {
+          setActiveSession(storedSession);
+          setSelectedTaskId(storedSession.taskId ?? "");
+          setDurationMinutes(storedSession.durationMinutes);
+
+          const remaining = getRemainingSeconds(storedSession);
+          setRemainingSeconds(remaining);
+
+          if (remaining <= 0 && !storedSession.isPaused) {
+            setIsRunning(false);
+            setIsPaused(false);
+            setSessionFinished(true);
+          } else {
+            setIsRunning(!storedSession.isPaused);
+            setIsPaused(storedSession.isPaused);
+          }
+
+          return;
+        }
 
         const mainTask = openTasks.find((task) => task.is_main_task);
 
@@ -78,24 +109,57 @@ export default function Focus() {
   }, []);
 
   useEffect(() => {
-    if (!isRunning || isPaused) return;
+    if (!activeSession) {
+      document.title = DEFAULT_TITLE;
+      return;
+    }
+
+    if (sessionFinished) {
+      document.title = `Concluído • ${DEFAULT_TITLE}`;
+      return;
+    }
+
+    const label = formatTime(remainingSeconds);
+    document.title = `${label} • ${DEFAULT_TITLE}`;
+
+    return () => {
+      document.title = DEFAULT_TITLE;
+    };
+  }, [activeSession, remainingSeconds, sessionFinished]);
+
+  useEffect(() => {
+    if (!activeSession || !isRunning || isPaused) return;
 
     intervalRef.current = window.setInterval(() => {
-      setRemainingSeconds((prev) => {
-        if (prev <= 1) {
-          if (intervalRef.current) {
-            window.clearInterval(intervalRef.current);
-          }
+      const stored = getActiveFocusSession();
 
-          setIsRunning(false);
-          setIsPaused(false);
-          setSessionFinished(true);
-
-          return 0;
+      if (!stored) {
+        if (intervalRef.current) {
+          window.clearInterval(intervalRef.current);
         }
 
-        return prev - 1;
-      });
+        setIsRunning(false);
+        setIsPaused(false);
+        setActiveSession(null);
+        setRemainingSeconds(durationMinutes * 60);
+        return;
+      }
+
+      const remaining = getRemainingSeconds(stored);
+
+      if (remaining <= 0) {
+        if (intervalRef.current) {
+          window.clearInterval(intervalRef.current);
+        }
+
+        setRemainingSeconds(0);
+        setIsRunning(false);
+        setIsPaused(false);
+        setSessionFinished(true);
+        return;
+      }
+
+      setRemainingSeconds(remaining);
     }, 1000);
 
     return () => {
@@ -103,29 +167,35 @@ export default function Focus() {
         window.clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, isPaused]);
+  }, [activeSession, isRunning, isPaused, durationMinutes]);
 
-  const selectedTask = useMemo(
-    () => tasks.find((task) => task.id === selectedTaskId) ?? null,
-    [tasks, selectedTaskId]
-  );
+  const selectedTask = useMemo(() => {
+    if (activeSession?.taskId) {
+      return tasks.find((task) => task.id === activeSession.taskId) ?? null;
+    }
+
+    return tasks.find((task) => task.id === selectedTaskId) ?? null;
+  }, [tasks, selectedTaskId, activeSession]);
 
   function resetTimer(minutes = durationMinutes) {
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
     }
 
+    clearActiveFocusSession();
+    setActiveSession(null);
     setIsRunning(false);
     setIsPaused(false);
-    setStartedAt(null);
     setSessionFinished(false);
-
     setRemainingSeconds(minutes * 60);
+    document.title = DEFAULT_TITLE;
   }
 
   function handleDurationChange(minutes: number) {
+    if (activeSession) return;
+
     setDurationMinutes(minutes);
-    resetTimer(minutes);
+    setRemainingSeconds(minutes * 60);
   }
 
   function handleStart() {
@@ -137,30 +207,47 @@ export default function Focus() {
       return;
     }
 
-    if (!startedAt) {
-      setStartedAt(new Date().toISOString());
-    }
+    const session = createActiveFocusSession({
+      taskId: selectedTaskId,
+      taskTitle: selectedTask?.title ?? null,
+      durationMinutes,
+    });
 
+    saveActiveFocusSession(session);
+    setActiveSession(session);
+    setRemainingSeconds(durationMinutes * 60);
     setIsRunning(true);
     setIsPaused(false);
   }
 
   function handlePause() {
-    setIsPaused(true);
-    setIsRunning(false);
+    if (!activeSession) return;
+
+    const updated = pauseActiveFocusSession(activeSession);
 
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
     }
+
+    setActiveSession(updated);
+    setRemainingSeconds(updated.remainingSecondsWhenPaused ?? remainingSeconds);
+    setIsPaused(true);
+    setIsRunning(false);
   }
 
   function handleResume() {
+    if (!activeSession) return;
+
+    const updated = resumeActiveFocusSession(activeSession);
+
+    setActiveSession(updated);
+    setRemainingSeconds(getRemainingSeconds(updated));
     setIsPaused(false);
     setIsRunning(true);
   }
 
   async function handleCancel() {
-    if (!startedAt) {
+    if (!activeSession) {
       resetTimer();
       return;
     }
@@ -170,19 +257,21 @@ export default function Focus() {
       setError(null);
 
       await registerFocusSession({
-        task_id: selectedTaskId || null,
-        duration_minutes: durationMinutes,
+        task_id: activeSession.taskId,
+        duration_minutes: activeSession.durationMinutes,
         actual_duration_minutes: Math.max(
           0,
-          Math.round((durationMinutes * 60 - remainingSeconds) / 60)
+          Math.round(
+            (activeSession.durationMinutes * 60 - remainingSeconds) / 60
+          )
         ),
         status: "cancelled",
-        started_at: startedAt,
+        started_at: activeSession.startedAt,
         ended_at: new Date().toISOString(),
         xp_earned: 0,
       });
 
-      resetTimer();
+      resetTimer(activeSession.durationMinutes);
     } catch (err) {
       setError(
         err instanceof Error
@@ -195,23 +284,23 @@ export default function Focus() {
   }
 
   async function handleComplete() {
+    if (!activeSession) return;
+
     try {
       setSaving(true);
       setError(null);
 
-      const sessionStart = startedAt ?? new Date().toISOString();
-
       await registerFocusSession({
-        task_id: selectedTaskId || null,
-        duration_minutes: durationMinutes,
-        actual_duration_minutes: durationMinutes,
+        task_id: activeSession.taskId,
+        duration_minutes: activeSession.durationMinutes,
+        actual_duration_minutes: activeSession.durationMinutes,
         status: "completed",
-        started_at: sessionStart,
+        started_at: activeSession.startedAt,
         ended_at: new Date().toISOString(),
         xp_earned: 5,
       });
 
-      resetTimer();
+      resetTimer(activeSession.durationMinutes);
     } catch (err) {
       setError(
         err instanceof Error
@@ -261,9 +350,9 @@ export default function Focus() {
                 <label>Tarefa</label>
 
                 <select
-                  value={selectedTaskId}
+                  value={activeSession?.taskId ?? selectedTaskId}
                   onChange={(e) => setSelectedTaskId(e.target.value)}
-                  disabled={isRunning || saving}
+                  disabled={isRunning || isPaused || saving || !!activeSession}
                 >
                   <option value="">Selecione</option>
 
@@ -285,39 +374,61 @@ export default function Focus() {
                       type="button"
                       className={
                         durationMinutes === minutes
-                          ? `${styles.durationButton} ${styles.durationButtonActive}`
+                        ? `${styles.durationButton} ${styles.durationButtonActive}`
                           : styles.durationButton
                       }
                       onClick={() => handleDurationChange(minutes)}
-                      disabled={isRunning || saving}
+                      disabled={isRunning || isPaused || saving || !!activeSession}
                     >
                       {minutes} min
                     </button>
                   ))}
                 </div>
               </div>
+
+              {selectedTask && (
+                <div className={styles.taskPreview}>
+                  <span className={styles.previewTag}>Tarefa atual</span>
+                  <strong>{selectedTask.title}</strong>
+                  <p>
+                    {selectedTask.description?.trim()
+                      ? selectedTask.description
+                      : "Sem descrição adicional."}
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </section>
 
         <section className={`${styles.card} ${styles.timerCard}`}>
-          <strong className={styles.timerText}>
-            {formatTime(remainingSeconds)}
-          </strong>
+          <div className={styles.timerHeader}>
+            <span className={styles.timerTag}>
+              {activeSession ? "Foco em andamento" : "Foco ativo"}
+            </span>
+          </div>
 
-          <p className={styles.timerTask}>
-            {selectedTask ? selectedTask.title : "Escolha uma tarefa"}
-          </p>
+          <div className={styles.timerCircle}>
+            <div className={styles.timerInner}>
+              <strong className={styles.timerText}>
+                {formatTime(remainingSeconds)}
+              </strong>
+
+              <span className={styles.timerSubtext}>
+                {selectedTask ? selectedTask.title : "Escolha uma tarefa"}
+              </span>
+            </div>
+          </div>
 
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width: `${Math.max(progressPercent, 0)}%` }}
+              style={{ width:`${Math.max(progressPercent, 0)}%`}}
             />
           </div>
 
           <div className={styles.actions}>
-            {!isRunning && !isPaused && !sessionFinished && (
+            {!isRunning && !isPaused && !sessionFinished && !activeSession && (
               <button
                 className={styles.primaryButton}
                 onClick={handleStart}
@@ -377,6 +488,11 @@ export default function Focus() {
               </button>
             )}
           </div>
+
+          <p className={styles.helperText}>
+            Ao concluir a sessão, ela será registrada no seu histórico e somará
+            XP ao seu progresso.
+          </p>
         </section>
       </div>
     </section>

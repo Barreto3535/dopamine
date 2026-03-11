@@ -117,6 +117,10 @@ export default function App() {
           path="*"
           element={<Navigate to={session ? "/dashboard" : "/"} replace />}
         />
+        <Route
+          path="/*"
+          element={<Navigate to={session ? "/dashboard" : "/"} replace />}
+        />
       </Routes>
     </BrowserRouter>
   );
