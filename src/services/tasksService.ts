@@ -7,6 +7,7 @@ import type {
   UpdateTaskInput,
   UpdateTaskStepInput,
 } from "../types/task";
+import { addUserCoins } from "./coinsService";
 
 export async function listTasks(): Promise<Task[]> {
   const { data, error } = await supabase
@@ -112,6 +113,9 @@ export async function completeTask(taskId: string): Promise<void> {
 
   if (error) {
     throw new Error(error.message);
+  }
+  else{
+    await addUserCoins(2);
   }
 }
 

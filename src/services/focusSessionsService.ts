@@ -20,6 +20,9 @@ export async function listMyFocusSessions(): Promise<FocusSession[]> {
 export async function registerFocusSession(
   input: RegisterFocusSessionInput
 ): Promise<string> {
+  if (input.status ==="completed"){
+    await addUserCoins(3);
+  }
   const { data, error } = await supabase.rpc("register_focus_session", {
     p_task_id: input.task_id ?? null,
     p_duration_minutes: input.duration_minutes,
