@@ -1,44 +1,54 @@
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabaseClient";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
+import { listMyActiveEffects } from "../../services/shopService";
+import { getMyCoins } from "../../services/progressService";
 
-export default function AppHeader() {
-  const navigate = useNavigate();
+type Props = {
+  onMenuClick: () => void;
+};
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    navigate("/");
-  }
+export default function AppHeader({ onMenuClick }: Props) {
+  const [coins, setCoins] = useState(0);
+  const [hasFocusBoost, setHasFocusBoost] = useState(false);
+
+  useEffect(() => {
+    async function loadHeaderData() {
+      try {
+        const [effects, coinsValue] = await Promise.all([
+          listMyActiveEffects(),
+          getMyCoins(),
+        ]);
+
+        setCoins(coinsValue);
+        setHasFocusBoost(
+          effects.some((effect) => effect.effect_type === "focus_boost")
+        );
+      } catch (error) {
+        console.error("Erro ao carregar dados do header:", error);
+      }
+    }
+
+    loadHeaderData();
+  }, []);
 
   return (
     <header className={styles.header}>
-      <div className={styles.content}>
-        <div className={styles.left}>
-          <Link to="/dashboard" className={styles.logo}>
-            FocusQuest
-          </Link>
-        </div>
+      <button
+        type="button"
+        className={styles.menuButton}
+        onClick={onMenuClick}
+        aria-label="Abrir menu"
+      >
+        ☰
+      </button>
 
-        <div className={styles.right}>
-          <Link to="/tasks" className={styles.navLink}>
-            Tarefas
-          </Link>
-          <Link to="/focus" className={styles.navLink}>
-            Foco
-          </Link>
-          <Link to="/progress" className={styles.navLink}>
-            Progresso
-          </Link>
-          <Link to="/shop" className={styles.navLink}>
-            Shop
-          </Link>
-          <Link to="/inventory" className={styles.navLink}>
-            Inventário
-          </Link>
-          <button className={styles.logoutButton} onClick={handleLogout}>
-            Sair
-          </button>
-        </div>
+      <div className={styles.brand}>
+        <strong className={styles.brandTitle}>FocusQuest</strong>
+      </div>
+
+      <div className={styles.right}>
+        {hasFocusBoost && <span className={styles.boostBadge}>⚡</span>}
+        <span className={styles.coinsBadge}>💰 {coins}</span>
       </div>
     </header>
   );

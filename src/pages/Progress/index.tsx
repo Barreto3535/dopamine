@@ -198,13 +198,13 @@ export default function Progress() {
                 <YAxis allowDecimals={false} />
                 <Tooltip />
                 <Bar dataKey="focusCount" radius={[8, 8, 0, 0]}>
-                  <LabelList 
-                    dataKey="focusCount" 
+                  <LabelList
+                    dataKey="focusCount"
                     position="top"
                     style={{
-                      fontsize:12,
+                      fontsize: 12,
                       fontWeight: 600
-                    }}/>
+                    }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -228,8 +228,8 @@ export default function Progress() {
                   dataKey="xp"
                   strokeWidth={2}
                   fillOpacity={0.2}
-                  dot={{ r:1}}
-                  label={{position: "top"}}
+                  dot={{ r: 1 }}
+                  label={{ position: "top" }}
                 />
               </AreaChart>
             </ResponsiveContainer>

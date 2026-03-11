@@ -1,21 +1,26 @@
 import { Outlet } from "react-router-dom";
+import { useState } from "react";
 import AppHeader from "../../components/AppHeader";
 import AppSidebar from "../../components/AppSidebar";
-import Container from "../../components/Container";
+import MobileDrawer from "../../components/MobileDrawer";
 import styles from "./styles.module.css";
 
 export default function AppLayout() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   return (
     <div className={styles.layout}>
       <AppSidebar />
 
       <div className={styles.contentArea}>
-        <AppHeader />
+        <AppHeader onMenuClick={() => setIsDrawerOpen(true)} />
+        <MobileDrawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+        />
 
         <main className={styles.main}>
-          <Container>
-            <Outlet />
-          </Container>
+          <Outlet />
         </main>
       </div>
     </div>

@@ -1,9 +1,34 @@
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabaseClient";
 import styles from "./styles.module.css";
+import { supabase } from "../../lib/supabaseClient";
+import { listMyActiveEffects } from "../../services/shopService";
+import { getMyCoins } from "../../services/progressService";
 
 export default function AppSidebar() {
   const navigate = useNavigate();
+  const [coins, setCoins] = useState(0);
+  const [hasFocusBoost, setHasFocusBoost] = useState(false);
+
+  useEffect(() => {
+    async function loadSidebarData() {
+      try {
+        const [effects, coinsValue] = await Promise.all([
+          listMyActiveEffects(),
+          getMyCoins(),
+        ]);
+
+        setCoins(coinsValue);
+        setHasFocusBoost(
+          effects.some((effect) => effect.effect_type === "focus_boost")
+        );
+      } catch (error) {
+        console.error("Erro ao carregar sidebar:", error);
+      }
+    }
+
+    loadSidebarData();
+  }, []);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -18,6 +43,11 @@ export default function AppSidebar() {
           <strong className={styles.brandTitle}>FocusQuest</strong>
           <span className={styles.brandText}>Seu progresso diário</span>
         </div>
+      </div>
+
+      <div className={styles.statusBox}>
+        <span className={styles.coinsBadge}>💰 {coins} coins</span>
+        {hasFocusBoost && <span className={styles.boostBadge}>⚡ Boost ativo</span>}
       </div>
 
       <nav className={styles.nav}>
@@ -63,7 +93,7 @@ export default function AppSidebar() {
             isActive ? `${styles.link} ${styles.active}` : styles.link
           }
         >
-          Shop
+          Loja
         </NavLink>
 
         <NavLink
@@ -75,7 +105,6 @@ export default function AppSidebar() {
           Inventário
         </NavLink>
       </nav>
-      
 
       <button className={styles.logoutButton} onClick={handleLogout}>
         Sair

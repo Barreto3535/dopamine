@@ -1,45 +1,52 @@
-.sidebar {
-  width: 280px;
-  min-height: 100vh;
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.4);
+  z-index: 60;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  width: min(82vw, 320px);
+  height: 100vh;
   background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
   padding: var(--space-5);
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: var(--space-5);
 }
 
-.brand {
+.top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: var(--space-3);
 }
 
-.logoMark {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  color: var(--color-surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-}
-
 .brandTitle {
-  display: block;
   color: var(--color-text);
+  font-size: 1.1rem;
 }
 
-.brandText {
-  display: block;
+.brandSubtitle {
   margin-top: var(--space-1);
   color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
-.statusBox {
+.closeButton {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  font-weight: 700;
+}
+
+.statusRow {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
@@ -97,7 +104,8 @@
 }
 
 @media (min-width: 1024px) {
-  .sidebar {
-    display: flex;
+  .backdrop,
+  .drawer {
+    display: none;
   }
 }
