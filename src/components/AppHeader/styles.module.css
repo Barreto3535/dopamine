@@ -11,12 +11,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .logo {
   font-weight: 800;
   color: var(--color-text);
   font-size: 1rem;
+  text-decoration: none;
+}
+
+.navLink {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .logoutButton {

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import styles from "./styles.module.css";
 
@@ -14,10 +14,16 @@ export default function AppHeader() {
     <header className={styles.header}>
       <div className={styles.content}>
         <div className={styles.left}>
-          <span className={styles.logo}>FocusQuest</span>
+          <Link to="/dashboard" className={styles.logo}>
+            FocusQuest
+          </Link>
         </div>
 
         <div className={styles.right}>
+          <Link to="/tasks" className={styles.navLink}>
+            Tarefas
+          </Link>
+
           <button className={styles.logoutButton} onClick={handleLogout}>
             Sair
           </button>

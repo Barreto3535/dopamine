@@ -4,22 +4,23 @@ import type { ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./lib/supabaseClient";
 
+//layouts
 import MainLayout from "./layouts/MainLayout";
+import AppLayout from "./layouts/AppLayout";
 
-// Pages
+//pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import AppLayout from './layouts/AppLayout';
-import Signup from './pages/Signup';
-import Tasks from './pages/Tasks';
+import Tasks from "./pages/Tasks";
 
-type ProtectedRouteProps = {
+type GuardProps = {
   session: Session | null;
   children: ReactNode;
 };
 
-function ProtectedRoute({ session, children }: ProtectedRouteProps) {
+function ProtectedRoute({ session, children }: GuardProps) {
   if (!session) {
     return <Navigate to="/login" replace />;
   }
@@ -27,10 +28,7 @@ function ProtectedRoute({ session, children }: ProtectedRouteProps) {
   return <>{children}</>;
 }
 
-function PublicOnlyRoute({
-  session,
-  children,
-}: ProtectedRouteProps) {
+function PublicOnlyRoute({ session, children }: GuardProps) {
   if (session) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -78,12 +76,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rotas públicas com layout */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
         </Route>
 
-        {/* Rotas públicas sem layout */}
         <Route
           path="/login"
           element={
@@ -92,6 +88,7 @@ export default function App() {
             </PublicOnlyRoute>
           }
         />
+
         <Route
           path="/signup"
           element={
@@ -101,31 +98,20 @@ export default function App() {
           }
         />
 
-        {/* Rotas protegidas com layout*/}
-        <Route element={<AppLayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute session={session}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
-              <ProtectedRoute session={session}>
-                <Tasks />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          element={
+            <ProtectedRoute session={session}>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/tasks" element={<Tasks />} />
         </Route>
-        {/* Fallback */}
+
         <Route
           path="*"
-          element={
-            <Navigate to={session ? "/dashboard" : "/"} replace />
-          }
+          element={<Navigate to={session ? "/dashboard" : "/"} replace />}
         />
       </Routes>
     </BrowserRouter>
