@@ -170,3 +170,16 @@ export async function getFocusChartLast7Days(): Promise<DailyChartItem[]> {
     };
   });
 }
+
+export async function getMyCoins(): Promise<number>{
+  const {data, error} = await supabase
+    .from("user_progress")
+    .select("coins")
+    .maybeSingle();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+    
+    return data?.coins??0;
+}

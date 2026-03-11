@@ -56,6 +56,14 @@ export default function AppSidebar() {
         >
           Progresso
         </NavLink>
+        <NavLink
+          to="/shop"
+          className={({ isActive }) =>
+            isActive ? `${styles.link} ${styles.active}` : styles.link
+          }
+        >
+          Shop
+        </NavLink>
       </nav>
 
       <button className={styles.logoutButton} onClick={handleLogout}>

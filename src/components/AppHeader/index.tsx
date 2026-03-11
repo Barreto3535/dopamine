@@ -29,6 +29,9 @@ export default function AppHeader() {
           <Link to="/progress" className={styles.navLink}>
             Progresso
           </Link>
+          <Link to="/shop" className={styles.navLink}>
+            Shop
+          </Link>
           <button className={styles.logoutButton} onClick={handleLogout}>
             Sair
           </button>
