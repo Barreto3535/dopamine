@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./styles.module.css";
-import { listMyItems, type UserItem } from "../../services/shopService";
+import {
+  listMyItems,
+  listMyActiveEffects,
+  useFocusBoost,
+  type UserItem,
+  type ActiveEffect,
+} from "../../services/shopService";
 
 export default function Inventory() {
   const [items, setItems] = useState<UserItem[]>([]);
+  const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
   const [loading, setLoading] = useState(true);
+  const [usingItemId, setUsingItemId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function loadInventory() {
@@ -12,8 +20,13 @@ export default function Inventory() {
       setLoading(true);
       setError(null);
 
-      const data = await listMyItems();
-      setItems(data);
+      const [itemsData, effectsData] = await Promise.all([
+        listMyItems(),
+        listMyActiveEffects(),
+      ]);
+
+      setItems(itemsData);
+      setActiveEffects(effectsData);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Erro ao carregar inventário."
@@ -26,6 +39,29 @@ export default function Inventory() {
   useEffect(() => {
     loadInventory();
   }, []);
+
+  const activeEffectTypes = useMemo(
+    () => new Set(activeEffects.map((effect) => effect.effect_type)),
+    [activeEffects]
+  );
+
+  async function handleUseItem(itemId: string) {
+    try {
+      setUsingItemId(itemId);
+      setError(null);
+
+      if (itemId === "focus_boost") {
+        await useFocusBoost();
+      }
+
+      await loadInventory();
+      alert("Item ativado com sucesso!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao usar item.");
+    } finally {
+      setUsingItemId(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -50,10 +86,38 @@ export default function Inventory() {
           <p className={styles.eyebrow}>Seus itens</p>
           <h1 className={styles.title}>Inventário</h1>
           <p className={styles.subtitle}>
-            Veja os itens que você já desbloqueou ou comprou na loja.
+            Veja os itens que você comprou e use seus boosts quando quiser.
           </p>
         </div>
       </header>
+
+      {activeEffects.length > 0 && (
+        <section className={styles.activeEffectsSection}>
+          <div className={styles.sectionHeader}>
+            <h2>Efeitos ativos</h2>
+          </div>
+
+          <div className={styles.effectsList}>
+            {activeEffects.map((effect) => (
+              <div key={effect.id} className={styles.activeEffectCard}>
+                <span className={styles.activeEffectIcon}>⚡</span>
+                <div>
+                  <strong className={styles.activeEffectTitle}>
+                    {effect.effect_type === "focus_boost"
+                      ? "Focus Boost ativo"
+                      : effect.effect_type}
+                  </strong>
+                  <p className={styles.activeEffectText}>
+                    {effect.effect_type === "focus_boost"
+                    ? `Próxima sessão de foco com +${effect.effect_value}% XP`
+                      : `Efeito ativo: ${effect.effect_value}`}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {items.length === 0 ? (
         <div className={styles.emptyCard}>
@@ -69,6 +133,14 @@ export default function Inventory() {
             const item = entry.shop_items;
 
             if (!item) return null;
+
+            const isUsing = usingItemId === item.id;
+            const isFocusBoostActive = activeEffectTypes.has("focus_boost");
+
+            const canUseFocusBoost =
+              item.id === "focus_boost" &&
+              entry.quantity > 0 &&
+              !isFocusBoostActive;
 
             return (
               <article key={entry.id} className={styles.card}>
@@ -92,7 +164,25 @@ export default function Inventory() {
                   <span className={styles.quantity}>
                     Quantidade: {entry.quantity}
                   </span>
+
+                  {item.id === "focus_boost" && isFocusBoostActive && (
+                    <span className={styles.activeBadge}>Ativo</span>
+                  )}
                 </div>
+
+                {item.id === "focus_boost" && (
+                  <button
+                    className={styles.useButton}
+                    onClick={() => handleUseItem(item.id)}
+                    disabled={isUsing || !canUseFocusBoost}
+                  >
+                    {isUsing
+                      ? "Usando..."
+                      : isFocusBoostActive
+                        ? "Boost já ativo"
+                        : "Usar"}
+                  </button>
+                )}
               </article>
             );
           })}

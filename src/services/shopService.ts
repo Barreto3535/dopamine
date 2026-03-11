@@ -62,3 +62,31 @@ export async function listMyItems(): Promise<UserItem[]> {
 
   return data ?? [];
 }
+export async function useFocusBoost(): Promise<void> {
+  const { error } = await supabase.rpc("use_focus_boost");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+export type ActiveEffect = {
+  id: string;
+  user_id: string;
+  effect_type: string;
+  effect_value: number;
+  source_item_id: string | null;
+  created_at: string;
+};
+
+export async function listMyActiveEffects(): Promise<ActiveEffect[]> {
+  const { data, error } = await supabase
+    .from("active_effects")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ?? [];
+}
