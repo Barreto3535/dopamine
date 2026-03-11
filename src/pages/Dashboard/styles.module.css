@@ -335,3 +335,30 @@
     font-size: 2.5rem;
   }
 }
+.stateCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.stateText {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.stateError {
+  color: var(--color-danger);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.emptyMission {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

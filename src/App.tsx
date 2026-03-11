@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AppLayout from './layouts/AppLayout';
+import Signup from './pages/Signup';
 
 type ProtectedRouteProps = {
   session: Session | null;
@@ -87,6 +88,14 @@ export default function App() {
           element={
             <PublicOnlyRoute session={session}>
               <Login />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicOnlyRoute session={session}>
+              <Signup />
             </PublicOnlyRoute>
           }
         />

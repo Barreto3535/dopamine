@@ -4,9 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import styles from "./styles.module.css";
 
-export default function Login() {
+export default function Signup() {
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,20 +25,37 @@ export default function Login() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    if (!displayName.trim()) {
+      setError("Digite seu nome.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+
+    const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          display_name: displayName.trim(),
+        },
+      },
     });
 
     if (error) {
-      setError(
-        error.message === "Invalid login credentials"
-          ? "E-mail ou senha incorretos."
-          : "Não foi possível entrar. Tente novamente."
-      );
+      setError(error.message);
       setLoading(false);
       return;
     }
@@ -45,15 +65,16 @@ export default function Login() {
   }
 
   return (
-    <section className={styles.login}>
+    <section className={styles.signup}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <span className={styles.badge}>Bem-vindo de volta</span>
+          <span className={styles.badge}>Comece sua jornada</span>
 
-          <h1 className={styles.title}>Entrar na sua conta</h1>
+          <h1 className={styles.title}>Criar sua conta</h1>
 
           <p className={styles.subtitle}>
-            Continue sua jornada com mais foco, organização e progresso.
+            Organize suas tarefas, acompanhe seu progresso e avance com mais
+            clareza.
           </p>
         </div>
 
@@ -66,10 +87,25 @@ export default function Login() {
           )}
 
           <div className={styles.field}>
+            <label htmlFor="displayName" className={styles.label}>
+              Nome
+            </label>
+            <input
+              id="displayName"
+              type="text"
+              className={styles.input}
+              placeholder="Como você quer ser chamado"
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className={styles.field}>
             <label htmlFor="email" className={styles.label}>
               E-mail
             </label>
-
             <input
               id="email"
               type="email"
@@ -86,14 +122,29 @@ export default function Login() {
             <label htmlFor="password" className={styles.label}>
               Senha
             </label>
-
             <input
               id="password"
               type="password"
               className={styles.input}
-              placeholder="Digite sua senha"
+              placeholder="Crie uma senha"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="confirmPassword" className={styles.label}>
+              Confirmar senha
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              className={styles.input}
+              placeholder="Digite a senha novamente"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
               required
               disabled={loading}
             />
@@ -104,15 +155,15 @@ export default function Login() {
             className={styles.submitButton}
             disabled={loading}
           >
-            {loading ? "Entrando..." : "Entrar"}
+            {loading ? "Criando conta..." : "Criar conta"}
           </button>
         </form>
 
         <div className={styles.footer}>
           <p className={styles.footerText}>
-            Ainda não tem conta?{" "}
-            <Link to="/signup" className={styles.footerLink}>
-              Criar conta
+            Já tem conta?{" "}
+            <Link to="/login" className={styles.footerLink}>
+              Entrar
             </Link>
           </p>
 
