@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AppLayout from './layouts/AppLayout';
 import Signup from './pages/Signup';
+import Tasks from './pages/Tasks';
 
 type ProtectedRouteProps = {
   session: Session | null;
@@ -107,6 +108,14 @@ export default function App() {
             element={
               <ProtectedRoute session={session}>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks"
+            element={
+              <ProtectedRoute session={session}>
+                <Tasks />
               </ProtectedRoute>
             }
           />

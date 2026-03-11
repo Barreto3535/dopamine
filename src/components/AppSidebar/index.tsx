@@ -30,9 +30,14 @@ export default function AppSidebar() {
           Dashboard
         </NavLink>
 
-        <button className={styles.link} disabled>
+        <NavLink
+          to="/tasks"
+          className={({ isActive }) =>
+            isActive ? `${styles.link} ${styles.active}` : styles.link
+          }
+        >
           Tarefas
-        </button>
+        </NavLink>
 
         <button className={styles.link} disabled>
           Foco
