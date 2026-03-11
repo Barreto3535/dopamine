@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetails from './pages/TaskDetails';
 import Focus from './pages/Focus';
+import Progress from './pages/Progress';
 
 type GuardProps = {
   session: Session | null;
@@ -111,6 +112,7 @@ export default function App() {
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/tasks/:taskId" element={<TaskDetails />} />
           <Route path="/focus" element={<Focus />} />
+          <Route path="/progress" element={<Progress />} />
         </Route>
 
         <Route

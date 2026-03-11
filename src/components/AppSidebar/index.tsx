@@ -48,9 +48,14 @@ export default function AppSidebar() {
           Foco
         </NavLink>
 
-        <button className={styles.link} disabled>
+        <NavLink
+          to="/progress"
+          className={({ isActive }) =>
+            isActive ? `${styles.link} ${styles.active}` : styles.link
+          }
+        >
           Progresso
-        </button>
+        </NavLink>
       </nav>
 
       <button className={styles.logoutButton} onClick={handleLogout}>
