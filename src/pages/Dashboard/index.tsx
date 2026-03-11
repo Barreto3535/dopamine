@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import { getDashboardSummary } from "../../services/dashboardService";
 import type { DashboardSummary } from "../../types/dashboard";
+import { getActiveFocusSession, getRemainingSeconds } from "../../services/activeFocusSessionService";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -27,11 +28,23 @@ function getTaskStatusLabel(status: DashboardSummary["main_task"] extends infer 
   if (status === "in_progress") return "Em andamento";
   return "Pendente";
 }
+function formatTime(seconds: number) {
+  const minutes = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
 
+  const secs = (seconds % 60)
+    .toString()
+    .padStart(2, "0");
+
+  return `${minutes}:${secs}`;
+}
 export default function Dashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const[activeFocusRemaining, setActiveFocusRemaining] = useState<number| null>(null)
 
   useEffect(() => {
     async function loadDashboard() {
@@ -54,6 +67,29 @@ export default function Dashboard() {
     }
 
     loadDashboard();
+  }, []);
+
+  useEffect(() => {
+    const session = getActiveFocusSession();
+  
+    if (!session) return;
+  
+    const update = () => {
+      const remaining = getRemainingSeconds(session);
+  
+      if (remaining <= 0) {
+        setActiveFocusRemaining(null);
+        return;
+      }
+  
+      setActiveFocusRemaining(remaining);
+    };
+  
+    update();
+  
+    const interval = setInterval(update, 1000);
+  
+    return () => clearInterval(interval);
   }, []);
 
   const greeting = useMemo(() => getGreeting(), []);
@@ -255,16 +291,34 @@ export default function Dashboard() {
         </article>
 
         <article className={styles.focusCard}>
-          <span className={styles.focusTag}>Sessão de foco</span>
-          <h3 className={styles.focusTitle}>25 minutos para sair da inércia</h3>
-          <p className={styles.focusText}>
-            Escolha uma tarefa, respire e comece sem pressão.
-          </p>
+  <span className={styles.focusTag}>Sessão de foco</span>
 
-          <Link to="/focus" className={styles.secondaryLinkButton}>
-            Iniciar foco
-          </Link>
-        </article>
+  {activeFocusRemaining ? (
+    <>
+      <h3 className={styles.focusTitle}>Foco em andamento</h3>
+
+      <p className={styles.focusText}>
+        Tempo restante: <strong>{formatTime(activeFocusRemaining)}</strong>
+      </p>
+
+      <Link to="/focus" className={styles.primaryLinkButton}>
+        Continuar foco
+      </Link>
+    </>
+  ) : (
+    <>
+      <h3 className={styles.focusTitle}>25 minutos para sair da inércia</h3>
+
+      <p className={styles.focusText}>
+        Escolha uma tarefa, respire e comece sem pressão.
+      </p>
+
+      <Link to="/focus" className={styles.secondaryLinkButton}>
+        Iniciar foco
+      </Link>
+    </>
+  )}
+</article>
       </div>
     </section>
   );
