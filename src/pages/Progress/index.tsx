@@ -1,6 +1,19 @@
 import { useEffect, useState } from "react";
+import {
+  BarChart,
+  Bar,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  AreaChart,
+  Area,
+  LabelList,
+} from "recharts";
 import styles from "./styles.module.css";
 import {
+  getFocusChartLast7Days,
   getFocusSessionsTodayCount,
   getMyProgress,
   getTasksCompletedTodayCount,
@@ -8,6 +21,7 @@ import {
   getTotalCompletedTasksCount,
   getXpEarnedToday,
   listRecentFocusSessions,
+  type DailyChartItem,
 } from "../../services/progressService";
 import type { UserProgress } from "../../types/progress";
 import type { FocusSession } from "../../types/focusSession";
@@ -20,7 +34,17 @@ type ProgressOverview = {
   totalFocusSessions: number;
   totalCompletedTasks: number;
   recentSessions: FocusSession[];
+  weeklyChart: DailyChartItem[];
 };
+
+function formatSessionDate(date: string) {
+  return new Date(date).toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export default function Progress() {
   const [data, setData] = useState<ProgressOverview | null>(null);
@@ -41,6 +65,7 @@ export default function Progress() {
           totalFocusSessions,
           totalCompletedTasks,
           recentSessions,
+          weeklyChart,
         ] = await Promise.all([
           getMyProgress(),
           getFocusSessionsTodayCount(),
@@ -49,6 +74,7 @@ export default function Progress() {
           getTotalCompletedFocusSessionsCount(),
           getTotalCompletedTasksCount(),
           listRecentFocusSessions(),
+          getFocusChartLast7Days(),
         ]);
 
         setData({
@@ -59,6 +85,7 @@ export default function Progress() {
           totalFocusSessions,
           totalCompletedTasks,
           recentSessions,
+          weeklyChart,
         });
       } catch (err) {
         setError(
@@ -94,36 +121,45 @@ export default function Progress() {
     );
   }
 
+  const xp = data.progress?.xp ?? 0;
+  const level = data.progress?.level ?? 1;
+  const streak = data.progress?.streak ?? 0;
+  const coins = data.progress?.coins ?? 0;
+
   return (
     <section className={styles.page}>
       <header className={styles.header}>
         <p className={styles.eyebrow}>Acompanhe sua evolução</p>
         <h1 className={styles.title}>Seu progresso</h1>
         <p className={styles.subtitle}>
-          Veja sua constância, suas sessões de foco e o quanto você já avançou.
+          Veja sua consistência, suas sessões de foco e o quanto você já avançou.
         </p>
       </header>
 
-      <div className={styles.statsGrid}>
-        <article className={styles.statCard}>
-          <span className={styles.statLabel}>XP total</span>
-          <strong className={styles.statValue}>{data.progress?.xp ?? 0}</strong>
+      <section className={styles.heroGrid}>
+        <article className={styles.highlightCard}>
+          <span className={styles.highlightLabel}>XP total</span>
+          <strong className={styles.highlightValue}>{xp}</strong>
+          <p className={styles.highlightText}>
+            Seu progresso acumulado até agora.
+          </p>
         </article>
 
         <article className={styles.statCard}>
           <span className={styles.statLabel}>Nível</span>
-          <strong className={styles.statValue}>
-            {data.progress?.level ?? 1}
-          </strong>
+          <strong className={styles.statValue}>{level}</strong>
         </article>
 
         <article className={styles.statCard}>
           <span className={styles.statLabel}>Streak</span>
-          <strong className={styles.statValue}>
-            🔥 {data.progress?.streak ?? 0}
-          </strong>
+          <strong className={styles.statValue}>🔥 {streak}</strong>
         </article>
-      </div>
+
+        <article className={styles.statCard}>
+          <span className={styles.statLabel}>Moedas</span>
+          <strong className={styles.statValue}>{coins}</strong>
+        </article>
+      </section>
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
@@ -146,6 +182,59 @@ export default function Progress() {
             <strong className={styles.statValue}>{data.xpToday}</strong>
           </article>
         </div>
+      </section>
+
+      <section className={styles.chartGrid}>
+        <article className={styles.chartCard}>
+          <div className={styles.sectionHeader}>
+            <h2>Foco nos últimos 7 dias</h2>
+          </div>
+
+          <div className={styles.chartWrapper}>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={data.weeklyChart}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="label" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Bar dataKey="focusCount" radius={[8, 8, 0, 0]}>
+                  <LabelList 
+                    dataKey="focusCount" 
+                    position="top"
+                    style={{
+                      fontsize:12,
+                      fontWeight: 600
+                    }}/>
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </article>
+
+        <article className={styles.chartCard}>
+          <div className={styles.sectionHeader}>
+            <h2>XP nos últimos 7 dias</h2>
+          </div>
+
+          <div className={styles.chartWrapper}>
+            <ResponsiveContainer width="100%" height={280}>
+              <AreaChart data={data.weeklyChart}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="label" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Area
+                  type="monotone"
+                  dataKey="xp"
+                  strokeWidth={2}
+                  fillOpacity={0.2}
+                  dot={{ r:1}}
+                  label={{position: "top"}}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </article>
       </section>
 
       <section className={styles.section}>
@@ -186,7 +275,7 @@ export default function Progress() {
                 <div>
                   <strong>{session.duration_minutes} min</strong>
                   <p className={styles.sessionText}>
-                    {new Date(session.started_at).toLocaleString("pt-BR")}
+                    {formatSessionDate(session.started_at)}
                   </p>
                 </div>
 
