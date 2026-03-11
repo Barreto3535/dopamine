@@ -56,6 +56,7 @@ export default function AppSidebar() {
         >
           Progresso
         </NavLink>
+
         <NavLink
           to="/shop"
           className={({ isActive }) =>
@@ -64,7 +65,17 @@ export default function AppSidebar() {
         >
           Shop
         </NavLink>
+
+        <NavLink
+          to="/inventory"
+          className={({ isActive }) =>
+            isActive ? `${styles.link} ${styles.active}` : styles.link
+          }
+        >
+          Inventário
+        </NavLink>
       </nav>
+      
 
       <button className={styles.logoutButton} onClick={handleLogout}>
         Sair

@@ -32,6 +32,9 @@ export default function AppHeader() {
           <Link to="/shop" className={styles.navLink}>
             Shop
           </Link>
+          <Link to="/inventory" className={styles.navLink}>
+            Inventário
+          </Link>
           <button className={styles.logoutButton} onClick={handleLogout}>
             Sair
           </button>

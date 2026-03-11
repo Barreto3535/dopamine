@@ -16,6 +16,7 @@ import TaskDetails from "./pages/TaskDetails";
 import Focus from "./pages/Focus";
 import Progress from "./pages/Progress";
 import Shop from "./pages/Shop";
+import Inventory from "./pages/Inventory";
 
 import { checkUserStreak } from "./services/streakService";
 
@@ -129,6 +130,7 @@ export default function App() {
           <Route path="/focus" element={<Focus />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Route>
 
         <Route
