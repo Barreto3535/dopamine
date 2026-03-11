@@ -3,6 +3,8 @@ import type {
   FocusSession,
   RegisterFocusSessionInput,
 } from "../types/focusSession";
+import { addUserCoins } from "./coinsService";
+import { updateUserStreak } from "./streakService";
 
 export async function listMyFocusSessions(): Promise<FocusSession[]> {
   const { data, error } = await supabase
@@ -20,9 +22,7 @@ export async function listMyFocusSessions(): Promise<FocusSession[]> {
 export async function registerFocusSession(
   input: RegisterFocusSessionInput
 ): Promise<string> {
-  if (input.status ==="completed"){
-    await addUserCoins(3);
-  }
+  
   const { data, error } = await supabase.rpc("register_focus_session", {
     p_task_id: input.task_id ?? null,
     p_duration_minutes: input.duration_minutes,
@@ -36,6 +36,9 @@ export async function registerFocusSession(
   if (error) {
     throw new Error(error.message);
   }
-
+  if (input.status ==="completed"){
+    await addUserCoins(3);
+    await updateUserStreak();
+  }
   return data;
 }

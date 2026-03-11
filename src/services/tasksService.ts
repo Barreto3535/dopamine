@@ -8,6 +8,7 @@ import type {
   UpdateTaskStepInput,
 } from "../types/task";
 import { addUserCoins } from "./coinsService";
+import { updateUserStreak } from "./streakService";
 
 export async function listTasks(): Promise<Task[]> {
   const { data, error } = await supabase
@@ -107,6 +108,7 @@ export async function setMainTask(taskId: string): Promise<void> {
 }
 
 export async function completeTask(taskId: string): Promise<void> {
+  await updateUserStreak();
   const { error } = await supabase.rpc("complete_task", {
     p_task_id: taskId,
   });
@@ -114,9 +116,10 @@ export async function completeTask(taskId: string): Promise<void> {
   if (error) {
     throw new Error(error.message);
   }
-  else{
-    await addUserCoins(2);
-  }
+  
+  await addUserCoins(2);
+  
+  
 }
 
 export async function listTaskSteps(taskId: string): Promise<TaskStep[]> {

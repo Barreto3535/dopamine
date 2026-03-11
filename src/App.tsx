@@ -4,19 +4,19 @@ import type { ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./lib/supabaseClient";
 
-//layouts
 import MainLayout from "./layouts/MainLayout";
 import AppLayout from "./layouts/AppLayout";
 
-//pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
-import TaskDetails from './pages/TaskDetails';
-import Focus from './pages/Focus';
-import Progress from './pages/Progress';
+import TaskDetails from "./pages/TaskDetails";
+import Focus from "./pages/Focus";
+import Progress from "./pages/Progress";
+
+import { checkUserStreak } from "./services/streakService";
 
 type GuardProps = {
   session: Session | null;
@@ -46,10 +46,18 @@ export default function App() {
   useEffect(() => {
     let isMounted = true;
 
-    async function getInitialSession() {
+    async function bootstrap() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
+      if (session) {
+        try {
+          await checkUserStreak();
+        } catch (error) {
+          console.error("Erro ao verificar streak:", error);
+        }
+      }
 
       if (isMounted) {
         setSession(session);
@@ -57,13 +65,19 @@ export default function App() {
       }
     }
 
-    getInitialSession();
+    bootstrap();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
       setLoading(false);
+
+      if (nextSession) {
+        checkUserStreak().catch((error) => {
+          console.error("Erro ao verificar streak:", error);
+        });
+      }
     });
 
     return () => {
@@ -117,10 +131,6 @@ export default function App() {
 
         <Route
           path="*"
-          element={<Navigate to={session ? "/dashboard" : "/"} replace />}
-        />
-        <Route
-          path="/*"
           element={<Navigate to={session ? "/dashboard" : "/"} replace />}
         />
       </Routes>
