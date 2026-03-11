@@ -7,12 +7,15 @@ import {
   type UserItem,
   type ActiveEffect,
 } from "../../services/shopService";
+import { equipTheme, getMySelectedThemeId } from "../../services/themeService";
 
 export default function Inventory() {
   const [items, setItems] = useState<UserItem[]>([]);
   const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
+  const [selectedThemeId, setSelectedThemeId] = useState<string>("default");
   const [loading, setLoading] = useState(true);
   const [usingItemId, setUsingItemId] = useState<string | null>(null);
+  const [equippingThemeId, setEquippingThemeId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function loadInventory() {
@@ -20,13 +23,15 @@ export default function Inventory() {
       setLoading(true);
       setError(null);
 
-      const [itemsData, effectsData] = await Promise.all([
+      const [itemsData, effectsData, currentThemeId] = await Promise.all([
         listMyItems(),
         listMyActiveEffects(),
+        getMySelectedThemeId(),
       ]);
 
       setItems(itemsData);
       setActiveEffects(effectsData);
+      setSelectedThemeId(currentThemeId);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Erro ao carregar inventário."
@@ -63,6 +68,25 @@ export default function Inventory() {
     }
   }
 
+  async function handleEquipTheme(themeId: string) {
+    try {
+      setEquippingThemeId(themeId);
+      setError(null);
+
+      await equipTheme(themeId);
+
+      setSelectedThemeId(themeId);
+      document.documentElement.setAttribute("data-theme", themeId);
+
+      await loadInventory();
+      alert("Tema equipado com sucesso!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao equipar tema.");
+    } finally {
+      setEquippingThemeId(null);
+    }
+  }
+
   if (loading) {
     return (
       <section className={styles.container}>
@@ -86,7 +110,7 @@ export default function Inventory() {
           <p className={styles.eyebrow}>Seus itens</p>
           <h1 className={styles.title}>Inventário</h1>
           <p className={styles.subtitle}>
-            Veja os itens que você comprou e use seus boosts quando quiser.
+            Veja os itens que você comprou, use boosts e equipe seus temas.
           </p>
         </div>
       </header>
@@ -109,7 +133,7 @@ export default function Inventory() {
                   </strong>
                   <p className={styles.activeEffectText}>
                     {effect.effect_type === "focus_boost"
-                    ? `Próxima sessão de foco com +${effect.effect_value}% XP`
+                      ? `Próxima sessão de foco com +${effect.effect_value}% XP`
                       : `Efeito ativo: ${effect.effect_value}`}
                   </p>
                 </div>
@@ -142,6 +166,10 @@ export default function Inventory() {
               entry.quantity > 0 &&
               !isFocusBoostActive;
 
+            const isThemeItem = item.type === "unlock_theme" && !!item.theme_id;
+            const isEquippedTheme = item.theme_id === selectedThemeId;
+            const isEquipping = equippingThemeId === item.theme_id;
+
             return (
               <article key={entry.id} className={styles.card}>
                 <div className={styles.cardTop}>
@@ -168,6 +196,10 @@ export default function Inventory() {
                   {item.id === "focus_boost" && isFocusBoostActive && (
                     <span className={styles.activeBadge}>Ativo</span>
                   )}
+
+                  {isThemeItem && isEquippedTheme && (
+                    <span className={styles.equippedBadge}>Equipado</span>
+                  )}
                 </div>
 
                 {item.id === "focus_boost" && (
@@ -181,6 +213,20 @@ export default function Inventory() {
                       : isFocusBoostActive
                         ? "Boost já ativo"
                         : "Usar"}
+                  </button>
+                )}
+
+                {isThemeItem && item.theme_id && (
+                  <button
+                    className={styles.equipButton}
+                    onClick={() => handleEquipTheme(item.theme_id!)}
+                    disabled={isEquipping || isEquippedTheme}
+                  >
+                    {isEquipping
+                      ? "Equipando..."
+                      : isEquippedTheme
+                        ? "Equipado"
+                        : "Equipar"}
                   </button>
                 )}
               </article>

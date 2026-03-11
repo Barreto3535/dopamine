@@ -1,12 +1,27 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppHeader from "../../components/AppHeader";
 import AppSidebar from "../../components/AppSidebar";
 import MobileDrawer from "../../components/MobileDrawer";
 import styles from "./styles.module.css";
+import { getMySelectedThemeId } from "../../services/themeService";
 
 export default function AppLayout() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    async function applyTheme() {
+      try {
+        const selectedThemeId = await getMySelectedThemeId();
+        document.documentElement.setAttribute("data-theme", selectedThemeId);
+      } catch (error) {
+        console.error("Erro ao aplicar tema:", error);
+        document.documentElement.setAttribute("data-theme", "default");
+      }
+    }
+
+    applyTheme();
+  }, []);
 
   return (
     <div className={styles.layout}>
