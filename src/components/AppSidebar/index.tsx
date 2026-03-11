@@ -39,9 +39,14 @@ export default function AppSidebar() {
           Tarefas
         </NavLink>
 
-        <button className={styles.link} disabled>
+        <NavLink
+          to="/focus"
+          className={({ isActive }) =>
+            isActive ? `${styles.link} ${styles.active}` : styles.link
+          }
+        >
           Foco
-        </button>
+        </NavLink>
 
         <button className={styles.link} disabled>
           Progresso

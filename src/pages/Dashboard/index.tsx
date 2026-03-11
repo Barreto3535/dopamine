@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import { getDashboardSummary } from "../../services/dashboardService";
 import type { DashboardSummary } from "../../types/dashboard";
@@ -15,6 +16,16 @@ function getLevelProgress(xp: number) {
   const xpPerLevel = 100;
   const currentLevelXp = xp % xpPerLevel;
   return Math.min((currentLevelXp / xpPerLevel) * 100, 100);
+}
+
+function getTaskStatusLabel(status: DashboardSummary["main_task"] extends infer T
+  ? T extends { status: infer S }
+  ? S
+  : never
+  : never) {
+  if (status === "completed") return "Concluída";
+  if (status === "in_progress") return "Em andamento";
+  return "Pendente";
 }
 
 export default function Dashboard() {
@@ -75,6 +86,12 @@ export default function Dashboard() {
             Não foi possível carregar o dashboard.
           </p>
           <p className={styles.stateText}>{error}</p>
+
+          <div className={styles.stateActions}>
+            <Link to="/tasks" className={styles.secondaryLinkButton}>
+              Ir para tarefas
+            </Link>
+          </div>
         </div>
       </section>
     );
@@ -120,11 +137,7 @@ export default function Dashboard() {
           <div className={styles.missionHeader}>
             <span className={styles.sectionTag}>Missão principal</span>
             <span className={styles.missionSteps}>
-              {mainTask.status === "completed"
-                ? "Concluída"
-                : mainTask.status === "in_progress"
-                  ? "Em andamento"
-                  : "Pendente"}
+              {getTaskStatusLabel(mainTask.status)}
             </span>
           </div>
 
@@ -152,7 +165,20 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <button className={styles.primaryButton}>Começar próximo passo</button>
+          <div className={styles.missionActions}>
+            <Link
+              to={`/tasks/${mainTask.id}`}
+              className={styles.primaryLinkButton}
+            >
+              Ver tarefa
+            </Link>
+
+            {mainTask.status !== "completed" && (
+              <Link to="/focus" className={styles.secondaryLinkButton}>
+                Iniciar foco
+              </Link>
+            )}
+          </div>
         </div>
       ) : (
         <div className={styles.emptyMission}>
@@ -166,6 +192,12 @@ export default function Dashboard() {
             Crie uma tarefa e defina uma missão principal para começar seu dia
             com mais clareza.
           </p>
+
+          <div className={styles.missionActions}>
+            <Link to="/tasks" className={styles.primaryLinkButton}>
+              Ir para tarefas
+            </Link>
+          </div>
         </div>
       )}
 
@@ -214,6 +246,12 @@ export default function Dashboard() {
               <span>{openTasksCount} tarefas ainda abertas</span>
             </li>
           </ul>
+
+          <div className={styles.cardActions}>
+            <Link to="/tasks" className={styles.secondaryLinkButton}>
+              Ver tarefas
+            </Link>
+          </div>
         </article>
 
         <article className={styles.focusCard}>
@@ -223,7 +261,9 @@ export default function Dashboard() {
             Escolha uma tarefa, respire e comece sem pressão.
           </p>
 
-          <button className={styles.secondaryButton}>Iniciar foco</button>
+          <Link to="/focus" className={styles.secondaryLinkButton}>
+            Iniciar foco
+          </Link>
         </article>
       </div>
     </section>

@@ -15,6 +15,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import TaskDetails from './pages/TaskDetails';
+import Focus from './pages/Focus';
 
 type GuardProps = {
   session: Session | null;
@@ -109,6 +110,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/tasks/:taskId" element={<TaskDetails />} />
+          <Route path="/focus" element={<Focus />} />
         </Route>
 
         <Route
