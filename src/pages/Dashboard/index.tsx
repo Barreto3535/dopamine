@@ -3,7 +3,14 @@ import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import { getDashboardSummary } from "../../services/dashboardService";
 import type { DashboardSummary } from "../../types/dashboard";
-import { getActiveFocusSession, getRemainingSeconds } from "../../services/activeFocusSessionService";
+import {
+  getActiveFocusSession,
+  getRemainingSeconds,
+} from "../../services/activeFocusSessionService";
+import {
+  listMyActiveEffects,
+  type ActiveEffect,
+} from "../../services/shopService";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -21,30 +28,30 @@ function getLevelProgress(xp: number) {
 
 function getTaskStatusLabel(status: DashboardSummary["main_task"] extends infer T
   ? T extends { status: infer S }
-  ? S
-  : never
+    ? S
+    : never
   : never) {
   if (status === "completed") return "Concluída";
   if (status === "in_progress") return "Em andamento";
   return "Pendente";
 }
+
 function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60)
     .toString()
     .padStart(2, "0");
 
-  const secs = (seconds % 60)
-    .toString()
-    .padStart(2, "0");
+  const secs = (seconds % 60).toString().padStart(2, "0");
 
   return `${minutes}:${secs}`;
 }
+
 export default function Dashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const[activeFocusRemaining, setActiveFocusRemaining] = useState<number| null>(null)
+  const [activeFocusRemaining, setActiveFocusRemaining] = useState<number | null>(null);
+  const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -52,8 +59,13 @@ export default function Dashboard() {
         setLoading(true);
         setError(null);
 
-        const data = await getDashboardSummary();
-        setSummary(data);
+        const [dashboardData, effectsData] = await Promise.all([
+          getDashboardSummary(),
+          listMyActiveEffects(),
+        ]);
+
+        setSummary(dashboardData);
+        setActiveEffects(effectsData);
       } catch (err) {
         const message =
           err instanceof Error
@@ -71,24 +83,34 @@ export default function Dashboard() {
 
   useEffect(() => {
     const session = getActiveFocusSession();
-  
-    if (!session) return;
-  
+
+    if (!session) {
+      setActiveFocusRemaining(null);
+      return;
+    }
+
     const update = () => {
-      const remaining = getRemainingSeconds(session);
-  
+      const latestSession = getActiveFocusSession();
+
+      if (!latestSession) {
+        setActiveFocusRemaining(null);
+        return;
+      }
+
+      const remaining = getRemainingSeconds(latestSession);
+
       if (remaining <= 0) {
         setActiveFocusRemaining(null);
         return;
       }
-  
+
       setActiveFocusRemaining(remaining);
     };
-  
+
     update();
-  
+
     const interval = setInterval(update, 1000);
-  
+
     return () => clearInterval(interval);
   }, []);
 
@@ -103,6 +125,10 @@ export default function Dashboard() {
   const openTasksCount = summary?.open_tasks_count ?? 0;
   const focusSessionsToday = summary?.focus_sessions_today ?? 0;
   const tasksCompletedToday = summary?.tasks_completed_today ?? 0;
+
+  const activeFocusBoost = activeEffects.find(
+    (effect) => effect.effect_type === "focus_boost"
+  );
 
   if (loading) {
     return (
@@ -162,11 +188,24 @@ export default function Dashboard() {
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width: `${levelProgress}%` }}
+              style={{ width: `${levelProgress}% `}}
             />
           </div>
         </div>
       </div>
+
+      {activeFocusBoost && (
+        <div className={styles.activeBoostBanner}>
+          <div className={styles.activeBoostIcon}>⚡</div>
+
+          <div>
+            <strong className={styles.activeBoostTitle}>Focus Boost ativo</strong>
+            <p className={styles.activeBoostText}>
+              Sua próxima sessão concluída ganhará +{activeFocusBoost.effect_value}% XP.
+            </p>
+          </div>
+        </div>
+      )}
 
       {mainTask ? (
         <div className={styles.mainMission}>
@@ -291,34 +330,34 @@ export default function Dashboard() {
         </article>
 
         <article className={styles.focusCard}>
-  <span className={styles.focusTag}>Sessão de foco</span>
+          <span className={styles.focusTag}>Sessão de foco</span>
 
-  {activeFocusRemaining ? (
-    <>
-      <h3 className={styles.focusTitle}>Foco em andamento</h3>
+          {activeFocusRemaining ? (
+            <>
+              <h3 className={styles.focusTitle}>Foco em andamento</h3>
 
-      <p className={styles.focusText}>
-        Tempo restante: <strong>{formatTime(activeFocusRemaining)}</strong>
-      </p>
+              <p className={styles.focusText}>
+                Tempo restante: <strong>{formatTime(activeFocusRemaining)}</strong>
+              </p>
 
-      <Link to="/focus" className={styles.primaryLinkButton}>
-        Continuar foco
-      </Link>
-    </>
-  ) : (
-    <>
-      <h3 className={styles.focusTitle}>25 minutos para sair da inércia</h3>
+              <Link to="/focus" className={styles.primaryLinkButton}>
+                Continuar foco
+              </Link>
+            </>
+          ) : (
+            <>
+              <h3 className={styles.focusTitle}>25 minutos para sair da inércia</h3>
 
-      <p className={styles.focusText}>
-        Escolha uma tarefa, respire e comece sem pressão.
-      </p>
+              <p className={styles.focusText}>
+                Escolha uma tarefa, respire e comece sem pressão.
+              </p>
 
-      <Link to="/focus" className={styles.secondaryLinkButton}>
-        Iniciar foco
-      </Link>
-    </>
-  )}
-</article>
+              <Link to="/focus" className={styles.secondaryLinkButton}>
+                Iniciar foco
+              </Link>
+            </>
+          )}
+        </article>
       </div>
     </section>
   );

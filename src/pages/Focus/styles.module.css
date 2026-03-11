@@ -256,3 +256,26 @@
     align-items: start;
   }
 }
+.activeBoostBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: linear-gradient(135deg, #fefce8 0%, #eff6ff 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.activeBoostIcon {
+  font-size: 1.5rem;
+}
+
+.activeBoostTitle {
+  color: var(--color-text);
+}
+
+.activeBoostText {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}

@@ -13,6 +13,10 @@ import {
   resumeActiveFocusSession,
   saveActiveFocusSession,
 } from "../../services/activeFocusSessionService";
+import {
+  listMyActiveEffects,
+  type ActiveEffect,
+} from "../../services/shopService";
 
 const DEFAULT_MINUTES = 25;
 const DEFAULT_TITLE = "FocusQuest";
@@ -21,11 +25,11 @@ function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60)
     .toString()
     .padStart(2, "0");
-  const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-  // O erro estava aqui: faltando o $ antes da primeira chave.
-  return `${minutes}:${seconds}`; 
-}
 
+  const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+
+  return` ${minutes}:${seconds}`;
+}
 
 export default function Focus() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -45,6 +49,7 @@ export default function Focus() {
   const [activeSession, setActiveSession] = useState<ActiveFocusSession | null>(
     null
   );
+  const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
 
   const intervalRef = useRef<number | null>(null);
 
@@ -54,10 +59,15 @@ export default function Focus() {
         setLoading(true);
         setError(null);
 
-        const data = await listTasks();
-        const openTasks = data.filter((task) => task.status !== "completed");
+        const [tasksData, effectsData] = await Promise.all([
+          listTasks(),
+          listMyActiveEffects(),
+        ]);
+
+        const openTasks = tasksData.filter((task) => task.status !== "completed");
 
         setTasks(openTasks);
+        setActiveEffects(effectsData);
 
         const storedSession = getActiveFocusSession();
 
@@ -120,7 +130,7 @@ export default function Focus() {
     }
 
     const label = formatTime(remainingSeconds);
-    document.title = `${label} • ${DEFAULT_TITLE}`;
+    document.title =` ${label} • ${DEFAULT_TITLE}`;
 
     return () => {
       document.title = DEFAULT_TITLE;
@@ -176,6 +186,19 @@ export default function Focus() {
 
     return tasks.find((task) => task.id === selectedTaskId) ?? null;
   }, [tasks, selectedTaskId, activeSession]);
+
+  const activeFocusBoost = activeEffects.find(
+    (effect) => effect.effect_type === "focus_boost"
+  );
+
+  async function reloadActiveEffects() {
+    try {
+      const effects = await listMyActiveEffects();
+      setActiveEffects(effects);
+    } catch (err) {
+      console.error("Erro ao recarregar efeitos ativos:", err);
+    }
+  }
 
   function resetTimer(minutes = durationMinutes) {
     if (intervalRef.current) {
@@ -272,6 +295,7 @@ export default function Focus() {
       });
 
       resetTimer(activeSession.durationMinutes);
+      await reloadActiveEffects();
     } catch (err) {
       setError(
         err instanceof Error
@@ -301,6 +325,7 @@ export default function Focus() {
       });
 
       resetTimer(activeSession.durationMinutes);
+      await reloadActiveEffects();
     } catch (err) {
       setError(
         err instanceof Error
@@ -324,6 +349,19 @@ export default function Focus() {
           Escolha uma tarefa e avance um passo de cada vez.
         </p>
       </header>
+
+      {activeFocusBoost && (
+        <div className={styles.activeBoostBanner}>
+          <div className={styles.activeBoostIcon}>⚡</div>
+
+          <div>
+            <strong className={styles.activeBoostTitle}>Focus Boost ativo</strong>
+            <p className={styles.activeBoostText}>
+              Sua próxima sessão concluída ganhará +{activeFocusBoost.effect_value}% XP.
+            </p>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className={styles.errorBox}>
@@ -374,7 +412,7 @@ export default function Focus() {
                       type="button"
                       className={
                         durationMinutes === minutes
-                        ? `${styles.durationButton} ${styles.durationButtonActive}`
+                          ? `${styles.durationButton} ${styles.durationButtonActive}`
                           : styles.durationButton
                       }
                       onClick={() => handleDurationChange(minutes)}
@@ -423,7 +461,7 @@ export default function Focus() {
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width:`${Math.max(progressPercent, 0)}%`}}
+              style={{ width: `${Math.max(progressPercent, 0)}%` }}
             />
           </div>
 
