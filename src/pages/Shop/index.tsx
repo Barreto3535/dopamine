@@ -6,6 +6,7 @@ import {
   type ShopItem,
 } from "../../services/shopService";
 import { getMyCoins } from "../../services/progressService";
+import PageIntro from "../../components/PageIntro";
 
 export default function Shop() {
   const [items, setItems] = useState<ShopItem[]>([]);
@@ -63,17 +64,12 @@ export default function Shop() {
 
   return (
     <section className={styles.container}>
-      <header className={styles.header}>
-        <div>
-          <p className={styles.eyebrow}>Economia do app</p>
-          <h1 className={styles.title}>Loja</h1>
-          <p className={styles.subtitle}>
-            Compre itens úteis e cosméticos para personalizar sua jornada.
-          </p>
-        </div>
-
-        <div className={styles.coinsBox}>💰 {coins} coins</div>
-      </header>
+      <PageIntro
+        eyebrow="Economia do app"
+        title="Loja"
+        subtitle="Compre itens úteis e cosméticos para personalizar sua jornada."
+        rightSlot={<div className={styles.coinsBox}>💰 {coins} coins</div>}
+      />
 
       {error && <div className={styles.error}>{error}</div>}
 
@@ -98,6 +94,13 @@ export default function Shop() {
 
               {item.description && (
                 <p className={styles.description}>{item.description}</p>
+              )}
+
+              {item.theme_id && (
+                <div
+                  className={styles.previewSwatch}
+                  title={`Preview do tema ${item.title}`}
+                />
               )}
 
               <div className={styles.price}>{item.price} coins</div>

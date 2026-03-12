@@ -11,10 +11,11 @@ import {
   listMyActiveEffects,
   type ActiveEffect,
 } from "../../services/shopService";
+import ActiveEffectBanner from "../../components/ActiveEffectBanner";
+import FocusTimerCard from "../../components/FocusTimerCard";
 
 function getGreeting() {
   const hour = new Date().getHours();
-
   if (hour < 12) return "Bom dia";
   if (hour < 18) return "Boa tarde";
   return "Boa noite";
@@ -28,8 +29,8 @@ function getLevelProgress(xp: number) {
 
 function getTaskStatusLabel(status: DashboardSummary["main_task"] extends infer T
   ? T extends { status: infer S }
-    ? S
-    : never
+  ? S
+  : never
   : never) {
   if (status === "completed") return "Concluída";
   if (status === "in_progress") return "Em andamento";
@@ -82,22 +83,15 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const session = getActiveFocusSession();
-
-    if (!session) {
-      setActiveFocusRemaining(null);
-      return;
-    }
-
     const update = () => {
-      const latestSession = getActiveFocusSession();
+      const session = getActiveFocusSession();
 
-      if (!latestSession) {
+      if (!session) {
         setActiveFocusRemaining(null);
         return;
       }
 
-      const remaining = getRemainingSeconds(latestSession);
+      const remaining = getRemainingSeconds(session);
 
       if (remaining <= 0) {
         setActiveFocusRemaining(null);
@@ -110,7 +104,6 @@ export default function Dashboard() {
     update();
 
     const interval = setInterval(update, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -148,12 +141,6 @@ export default function Dashboard() {
             Não foi possível carregar o dashboard.
           </p>
           <p className={styles.stateText}>{error}</p>
-
-          <div className={styles.stateActions}>
-            <Link to="/tasks" className={styles.secondaryLinkButton}>
-              Ir para tarefas
-            </Link>
-          </div>
         </div>
       </section>
     );
@@ -188,23 +175,17 @@ export default function Dashboard() {
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width: `${levelProgress}% `}}
+              style={{ width: `${levelProgress}%` }}
             />
           </div>
         </div>
       </div>
 
       {activeFocusBoost && (
-        <div className={styles.activeBoostBanner}>
-          <div className={styles.activeBoostIcon}>⚡</div>
-
-          <div>
-            <strong className={styles.activeBoostTitle}>Focus Boost ativo</strong>
-            <p className={styles.activeBoostText}>
-              Sua próxima sessão concluída ganhará +{activeFocusBoost.effect_value}% XP.
-            </p>
-          </div>
-        </div>
+        <ActiveEffectBanner
+          title="Focus Boost ativo"
+          description={`Sua próxima sessão concluída ganhará +${activeFocusBoost.effect_value}% XP.`}
+        />
       )}
 
       {mainTask ? (
@@ -224,27 +205,22 @@ export default function Dashboard() {
               : "Continue de onde parou e foque apenas no próximo passo."}
           </p>
 
-          <div className={styles.missionProgress}>
-            <div className={styles.missionProgressBar}>
-              <div
-                className={styles.missionProgressFill}
-                style={{
-                  width:
-                    mainTask.status === "completed"
-                      ? "100%"
-                      : mainTask.status === "in_progress"
-                        ? "55%"
-                        : "20%",
-                }}
-              />
-            </div>
+          <div className={styles.missionProgressBar}>
+            <div
+              className={styles.missionProgressFill}
+              style={{
+                width:
+                  mainTask.status === "completed"
+                    ? "100%"
+                    : mainTask.status === "in_progress"
+                      ? "55%"
+                      : "20%",
+              }}
+            />
           </div>
 
           <div className={styles.missionActions}>
-            <Link
-              to={`/tasks/${mainTask.id}`}
-              className={styles.primaryLinkButton}
-            >
+            <Link to={`/tasks/${mainTask.id}`} className={styles.primaryLinkButton}>
               Ver tarefa
             </Link>
 
@@ -329,35 +305,34 @@ export default function Dashboard() {
           </div>
         </article>
 
-        <article className={styles.focusCard}>
-          <span className={styles.focusTag}>Sessão de foco</span>
-
-          {activeFocusRemaining ? (
-            <>
-              <h3 className={styles.focusTitle}>Foco em andamento</h3>
-
-              <p className={styles.focusText}>
-                Tempo restante: <strong>{formatTime(activeFocusRemaining)}</strong>
-              </p>
-
-              <Link to="/focus" className={styles.primaryLinkButton}>
-                Continuar foco
-              </Link>
-            </>
-          ) : (
-            <>
-              <h3 className={styles.focusTitle}>25 minutos para sair da inércia</h3>
-
-              <p className={styles.focusText}>
-                Escolha uma tarefa, respire e comece sem pressão.
-              </p>
-
-              <Link to="/focus" className={styles.secondaryLinkButton}>
-                Iniciar foco
-              </Link>
-            </>
-          )}
-        </article>
+        <FocusTimerCard
+          variant="compact"
+          statusLabel={activeFocusRemaining ? "Foco em andamento" : "Sessão de foco"}
+          timeText={activeFocusRemaining ? formatTime(activeFocusRemaining) : "25:00"}
+          taskTitle={
+            activeFocusRemaining
+              ? "Continue de onde parou"
+              : "25 minutos para sair da inércia"
+          }
+          progressPercent={activeFocusRemaining ? 50 : 0}
+          helperText={
+            activeFocusRemaining
+              ? "Você já tem uma sessão ativa. Volte e continue."
+              : "Escolha uma tarefa, respire e comece sem pressão."
+          }
+          actions={
+            <Link
+              to="/focus"
+              className={
+                activeFocusRemaining
+                  ? styles.primaryLinkButton
+                  : styles.secondaryLinkButton
+              }
+            >
+              {activeFocusRemaining ? "Continuar foco" : "Iniciar foco"}
+            </Link>
+          }
+        />
       </div>
     </section>
   );

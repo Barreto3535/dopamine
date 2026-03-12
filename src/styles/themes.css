@@ -1,0 +1,245 @@
+:root,
+[data-theme="default"] {
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f5f9;
+  --color-surface-soft: #f8fafc;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  --color-primary: #58cc02;
+  --color-primary-dark: #3f9a02;
+  --color-secondary: #1cb0f6;
+  --color-secondary-dark: #0c7fb5;
+
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+  --color-info: #3b82f6;
+
+  --color-coin-surface: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+  --color-coin-text: #92400e;
+
+  --color-boost-surface: linear-gradient(135deg, #fefce8 0%, #eff6ff 100%);
+  --color-boost-text: #0c7fb5;
+
+  --color-active-surface: rgba(28, 176, 246, 0.12);
+  --color-active-text: var(--color-secondary-dark);
+
+  --color-success-surface: rgba(88, 204, 2, 0.12);
+  --color-success-text: var(--color-primary-dark);
+
+  --color-equipped-surface: rgba(168, 85, 247, 0.12);
+  --color-equipped-text: #7e22ce;
+
+  --gradient-hero: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+  --gradient-focus-card: linear-gradient(135deg, #ecfeff 0%, #f0fdf4 100%);
+  --gradient-highlight-card: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+
+  --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 14px 32px rgba(15, 23, 42, 0.1);
+
+  --color-overlay: rgba(15, 23, 42, 0.4);
+--color-surface-glass: rgba(255, 255, 255, 0.88);
+}
+
+[data-theme="dark"] {
+  --color-background: #0f172a;
+  --color-surface: #111827;
+  --color-surface-muted: #1f2937;
+  --color-surface-soft: #0b1220;
+  --color-text: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-border: #1f2937;
+  --color-border-strong: #334155;
+
+  --color-primary: #58cc02;
+  --color-primary-dark: #84cc16;
+  --color-secondary: #38bdf8;
+  --color-secondary-dark: #7dd3fc;
+
+  --color-danger: #f87171;
+  --color-success: #4ade80;
+  --color-info: #60a5fa;
+
+  --color-coin-surface: linear-gradient(135deg, #3f2d06 0%, #4a3410 100%);
+  --color-coin-text: #fde68a;
+
+  --color-boost-surface: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --color-boost-text: #7dd3fc;
+
+  --color-active-surface: rgba(56, 189, 248, 0.18);
+  --color-active-text: #7dd3fc;
+
+  --color-success-surface: rgba(132, 204, 22, 0.16);
+  --color-success-text: #bef264;
+
+  --color-equipped-surface: rgba(192, 132, 252, 0.16);
+  --color-equipped-text: #e9d5ff;
+
+  --gradient-hero: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+  --gradient-focus-card: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+  --gradient-highlight-card: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+
+  --color-overlay: rgba(2, 6, 23, 0.58);
+--color-surface-glass: rgba(17, 24, 39, 0.88);
+}
+
+[data-theme="soft_white"] {
+  --color-background: #fcfcf9;
+  --color-surface: #fffefb;
+  --color-surface-muted: #f6f5f1;
+  --color-surface-soft: #fbfaf7;
+  --color-text: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-border: #ece8df;
+  --color-border-strong: #ddd6c8;
+
+  --color-primary: #7caa2d;
+  --color-primary-dark: #5f8d16;
+  --color-secondary: #8ecae6;
+  --color-secondary-dark: #219ebc;
+
+  --color-coin-surface: linear-gradient(135deg, #fff7d6 0%, #fff4c2 100%);
+  --color-coin-text: #8f5f00;
+
+  --color-boost-surface: linear-gradient(135deg, #f6fbff 0%, #f6fef8 100%);
+  --color-boost-text: #219ebc;
+
+  --color-active-surface: rgba(142, 202, 230, 0.18);
+  --color-active-text: #219ebc;
+
+  --color-success-surface: rgba(124, 170, 45, 0.14);
+  --color-success-text: #5f8d16;
+
+  --color-equipped-surface: rgba(196, 181, 253, 0.2);
+  --color-equipped-text: #6d28d9;
+
+  --gradient-hero: linear-gradient(135deg, #fffefb 0%, #f6fbff 100%);
+  --gradient-focus-card: linear-gradient(135deg, #f8fffd 0%, #fffefb 100%);
+  --gradient-highlight-card: linear-gradient(135deg, #fffefb 0%, #f7fafc 100%);
+
+  --color-overlay: rgba(31, 41, 55, 0.26);
+--color-surface-glass: rgba(255, 254, 251, 0.9);
+}
+
+[data-theme="flowers_field"] {
+  --color-background: #fff7fb;
+  --color-surface: #fffafc;
+  --color-surface-muted: #fdeff6;
+  --color-surface-soft: #fff5f9;
+  --color-text: #4a2c3a;
+  --color-text-secondary: #6b4c5a;
+  --color-text-muted: #8a6a78;
+  --color-border: #f5d7e6;
+  --color-border-strong: #e9bfd4;
+
+  --color-primary: #ec4899;
+  --color-primary-dark: #be185d;
+  --color-secondary: #84cc16;
+  --color-secondary-dark: #4d7c0f;
+
+  --color-coin-surface: linear-gradient(135deg, #fff0c9 0%, #ffe9b3 100%);
+  --color-coin-text: #8f5f00;
+
+  --color-boost-surface: linear-gradient(135deg, #fff4f8 0%, #f7fff1 100%);
+  --color-boost-text: #4d7c0f;
+
+  --color-active-surface: rgba(132, 204, 22, 0.16);
+  --color-active-text: #4d7c0f;
+
+  --color-success-surface: rgba(236, 72, 153, 0.14);
+  --color-success-text: #be185d;
+
+  --color-equipped-surface: rgba(244, 114, 182, 0.14);
+  --color-equipped-text: #9d174d;
+
+  --gradient-hero: linear-gradient(135deg, #fff7fb 0%, #fffef7 100%);
+  --gradient-focus-card: linear-gradient(135deg, #fff6fa 0%, #fafff6 100%);
+  --gradient-highlight-card: linear-gradient(135deg, #fff7fb 0%, #fffafc 100%);
+
+  --color-overlay: rgba(74, 44, 58, 0.28);
+--color-surface-glass: rgba(255, 250, 252, 0.9);
+}
+
+[data-theme="neon"] {
+  --color-background: #0b1020;
+  --color-surface: #11162a;
+  --color-surface-muted: #1a2140;
+  --color-surface-soft: #0f1530;
+  --color-text: #ecfeff;
+  --color-text-secondary: #bae6fd;
+  --color-text-muted: #7dd3fc;
+  --color-border: #1d2a52;
+  --color-border-strong: #274690;
+
+  --color-primary: #39ff14;
+  --color-primary-dark: #22c55e;
+  --color-secondary: #22d3ee;
+  --color-secondary-dark: #06b6d4;
+
+  --color-coin-surface: linear-gradient(135deg, #3c2f00 0%, #5a4600 100%);
+  --color-coin-text: #fde047;
+
+  --color-boost-surface: linear-gradient(135deg, #0f1530 0%, #10204a 100%);
+  --color-boost-text: #67e8f9;
+
+  --color-active-surface: rgba(34, 211, 238, 0.18);
+  --color-active-text: #67e8f9;
+
+  --color-success-surface: rgba(57, 255, 20, 0.14);
+  --color-success-text: #86efac;
+
+  --color-equipped-surface: rgba(217, 70, 239, 0.18);
+  --color-equipped-text: #f0abfc;
+
+  --gradient-hero: linear-gradient(135deg, #11162a 0%, #0f1530 100%);
+  --gradient-focus-card: linear-gradient(135deg, #0f1530 0%, #11162a 100%);
+  --gradient-highlight-card: linear-gradient(135deg, #11162a 0%, #1a2140 100%);
+
+  --color-overlay: rgba(2, 6, 23, 0.62);
+--color-surface-glass: rgba(17, 22, 42, 0.9);
+}
+
+[data-theme="cyberpunk"] {
+  --color-background: #12051f;
+  --color-surface: #1a0b2e;
+  --color-surface-muted: #24113f;
+  --color-surface-soft: #160926;
+  --color-text: #fdf4ff;
+  --color-text-secondary: #e9d5ff;
+  --color-text-muted: #d8b4fe;
+  --color-border: #3b1761;
+  --color-border-strong: #5b21b6;
+
+  --color-primary: #f59e0b;
+  --color-primary-dark: #d97706;
+  --color-secondary: #e879f9;
+  --color-secondary-dark: #c026d3;
+
+  --color-coin-surface: linear-gradient(135deg, #4a2b00 0%, #6b3d00 100%);
+  --color-coin-text: #fde68a;
+
+  --color-boost-surface: linear-gradient(135deg, #1a0b2e 0%, #2a1047 100%);
+  --color-boost-text: #f0abfc;
+
+  --color-active-surface: rgba(232, 121, 249, 0.16);
+  --color-active-text: #f0abfc;
+
+  --color-success-surface: rgba(245, 158, 11, 0.14);
+  --color-success-text: #fbbf24;
+
+  --color-equipped-surface: rgba(192, 132, 252, 0.18);
+  --color-equipped-text: #f3e8ff;
+
+  --gradient-hero: linear-gradient(135deg, #1a0b2e 0%, #12051f 100%);
+  --gradient-focus-card: linear-gradient(135deg, #160926 0%, #1a0b2e 100%);
+  --gradient-highlight-card: linear-gradient(135deg, #1a0b2e 0%, #24113f 100%);
+ 
+  --color-overlay: rgba(18, 5, 31, 0.62);
+--color-surface-glass: rgba(26, 11, 46, 0.9);
+}

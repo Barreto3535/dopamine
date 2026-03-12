@@ -25,6 +25,7 @@ import {
 } from "../../services/progressService";
 import type { UserProgress } from "../../types/progress";
 import type { FocusSession } from "../../types/focusSession";
+import PageIntro from "../../components/PageIntro";
 
 type ProgressOverview = {
   progress: UserProgress | null;
@@ -128,13 +129,11 @@ export default function Progress() {
 
   return (
     <section className={styles.page}>
-      <header className={styles.header}>
-        <p className={styles.eyebrow}>Acompanhe sua evolução</p>
-        <h1 className={styles.title}>Seu progresso</h1>
-        <p className={styles.subtitle}>
-          Veja sua consistência, suas sessões de foco e o quanto você já avançou.
-        </p>
-      </header>
+      <PageIntro
+        eyebrow="Acompanhe sua evolução"
+        title="Seu progresso"
+        subtitle="Veja sua consistência, suas sessões de foco e o quanto você já avançou."
+      />
 
       <section className={styles.heroGrid}>
         <article className={styles.highlightCard}>
@@ -195,16 +194,14 @@ export default function Progress() {
               <BarChart data={data.weeklyChart}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis dataKey="label" />
-                <YAxis allowDecimals={false} />
+                <YAxis allowDecimals={false} width={30} />
                 <Tooltip />
                 <Bar dataKey="focusCount" radius={[8, 8, 0, 0]}>
                   <LabelList
                     dataKey="focusCount"
                     position="top"
-                    style={{
-                      fontsize: 12,
-                      fontWeight: 600
-                    }} />
+                    formatter={(value: number) => (value === 0 ? "" : value)}
+                  />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -221,14 +218,14 @@ export default function Progress() {
               <AreaChart data={data.weeklyChart}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis dataKey="label" />
-                <YAxis allowDecimals={false} />
+                <YAxis allowDecimals={false} width={30} />
                 <Tooltip />
                 <Area
                   type="monotone"
                   dataKey="xp"
                   strokeWidth={2}
                   fillOpacity={0.2}
-                  dot={{ r: 1 }}
+                  dot={{ r: 4 }}
                   label={{ position: "top" }}
                 />
               </AreaChart>

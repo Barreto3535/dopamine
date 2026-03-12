@@ -5,10 +5,8 @@
   padding: var(--space-2) 0 var(--space-8);
 }
 
-/* HERO */
-
 .heroCard {
-  background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+  background: var(--gradient-hero);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
   display: flex;
@@ -60,13 +58,13 @@
 }
 
 .levelBadge {
-  background: rgba(59, 130, 246, 0.14);
-  color: var(--color-info);
+  background: var(--color-active-surface);
+  color: var(--color-active-text);
 }
 
 .streakBadge {
-  background: rgba(34, 197, 94, 0.14);
-  color: var(--color-success);
+  background: var(--color-success-surface);
+  color: var(--color-success-text);
 }
 
 .xpBlock {
@@ -88,16 +86,17 @@
   font-size: 1rem;
 }
 
-.progressBar {
+.progressBar,
+.missionProgressBar {
   width: 100%;
   height: 12px;
-  background: rgba(17, 24, 39, 0.08);
+  background: var(--color-surface-muted);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
 
-.progressFill {
-  width: 60%;
+.progressFill,
+.missionProgressFill {
   height: 100%;
   background: linear-gradient(
     90deg,
@@ -107,13 +106,19 @@
   border-radius: var(--radius-full);
 }
 
-/* MISSION */
-
-.mainMission {
+.mainMission,
+.emptyMission,
+.statCard,
+.listCard,
+.stateCard {
   background: var(--color-surface);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
   box-shadow: var(--shadow-sm);
+}
+
+.mainMission,
+.emptyMission {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -128,8 +133,8 @@
 }
 
 .sectionTag {
-  background: rgba(88, 204, 2, 0.12);
-  color: var(--color-primary-dark);
+  background: var(--color-success-surface);
+  color: var(--color-success-text);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
   font-size: 0.82rem;
@@ -153,23 +158,6 @@
   line-height: 1.6;
 }
 
-.missionProgressBar {
-  width: 100%;
-  height: 12px;
-  background: var(--color-surface-muted);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.missionProgressFill {
-  width: 40%;
-  height: 100%;
-  background: var(--color-primary);
-  border-radius: var(--radius-full);
-}
-
-.primaryButton,
-.secondaryButton,
 .primaryLinkButton,
 .secondaryLinkButton {
   min-height: 46px;
@@ -182,21 +170,25 @@
   text-decoration: none;
 }
 
-.primaryButton,
 .primaryLinkButton {
   background: var(--color-primary);
   color: var(--color-surface);
   box-shadow: var(--shadow-sm);
 }
 
-.secondaryButton,
 .secondaryLinkButton {
   background: var(--color-secondary);
   color: var(--color-surface);
   box-shadow: var(--shadow-sm);
 }
 
-/* STATS */
+.missionActions,
+.cardActions,
+.stateActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
 
 .statsGrid {
   display: grid;
@@ -205,10 +197,6 @@
 }
 
 .statCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -230,20 +218,10 @@
   line-height: 1.5;
 }
 
-/* BOTTOM GRID */
-
 .bottomGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
-}
-
-.listCard,
-.focusCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
 }
 
 .cardHeader {
@@ -292,35 +270,16 @@
   flex-shrink: 0;
 }
 
-.focusCard {
-  background: linear-gradient(135deg, #ecfeff 0%, #f0fdf4 100%);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.focusTag {
-  width: fit-content;
-  background: rgba(28, 176, 246, 0.12);
-  color: var(--color-secondary-dark);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.focusTitle {
-  font-size: 1.4rem;
-  line-height: 1.2;
-  color: var(--color-text);
-}
-
-.focusText {
+.stateText {
   color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
-/* DESKTOP */
+.stateError {
+  color: var(--color-danger);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
 
 @media (min-width: 768px) {
   .heroTop {
@@ -342,73 +301,4 @@
   .title {
     font-size: 2.5rem;
   }
-}
-.stateCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-}
-
-.stateText {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-}
-
-.stateError {
-  color: var(--color-danger);
-  font-weight: 700;
-  margin-bottom: var(--space-2);
-}
-
-.emptyMission {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.missionActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.cardActions {
-  margin-top: var(--space-4);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.stateActions {
-  margin-top: var(--space-4);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-.activeBoostBanner {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  background: linear-gradient(135deg, #fefce8 0%, #eff6ff 100%);
-  border-radius: var(--radius-xl);
-  padding: var(--space-4);
-  box-shadow: var(--shadow-sm);
-}
-
-.activeBoostIcon {
-  font-size: 1.5rem;
-}
-
-.activeBoostTitle {
-  color: var(--color-text);
-}
-
-.activeBoostText {
-  margin-top: var(--space-1);
-  color: var(--color-text-secondary);
-  line-height: 1.6;
 }

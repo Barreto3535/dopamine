@@ -1,0 +1,24 @@
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: var(--color-boost-surface);
+  color: var(--color-boost-text);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.title {
+  color: var(--color-text);
+}
+
+.text {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}

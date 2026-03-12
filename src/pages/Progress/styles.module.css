@@ -5,30 +5,6 @@
   padding: var(--space-2) 0 var(--space-8);
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.eyebrow {
-  color: var(--color-text-muted);
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-text);
-}
-
-.subtitle {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  max-width: 640px;
-}
-
 .section {
   display: flex;
   flex-direction: column;
@@ -40,18 +16,8 @@
   color: var(--color-text);
 }
 
-.heroGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
+.heroGrid,
+.statsGrid,
 .chartGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -70,7 +36,7 @@
 }
 
 .highlightCard {
-  background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+  background: var(--gradient-highlight-card);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);

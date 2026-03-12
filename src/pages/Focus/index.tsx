@@ -17,6 +17,9 @@ import {
   listMyActiveEffects,
   type ActiveEffect,
 } from "../../services/shopService";
+import PageIntro from "../../components/PageIntro";
+import ActiveEffectBanner from "../../components/ActiveEffectBanner";
+import FocusTimerCard from "../../components/FocusTimerCard";
 
 const DEFAULT_MINUTES = 25;
 const DEFAULT_TITLE = "FocusQuest";
@@ -28,7 +31,7 @@ function formatTime(totalSeconds: number) {
 
   const seconds = (totalSeconds % 60).toString().padStart(2, "0");
 
-  return` ${minutes}:${seconds}`;
+  return `${minutes}:${seconds}`;
 }
 
 export default function Focus() {
@@ -54,7 +57,7 @@ export default function Focus() {
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    async function loadTasks() {
+    async function loadFocusPage() {
       try {
         setLoading(true);
         setError(null);
@@ -109,7 +112,7 @@ export default function Focus() {
       }
     }
 
-    loadTasks();
+    loadFocusPage();
 
     return () => {
       if (intervalRef.current) {
@@ -129,8 +132,7 @@ export default function Focus() {
       return;
     }
 
-    const label = formatTime(remainingSeconds);
-    document.title =` ${label} • ${DEFAULT_TITLE}`;
+    document.title = `${formatTime(remainingSeconds)} • ${DEFAULT_TITLE}`;
 
     return () => {
       document.title = DEFAULT_TITLE;
@@ -342,25 +344,17 @@ export default function Focus() {
 
   return (
     <section className={styles.page}>
-      <header className={styles.header}>
-        <p className={styles.eyebrow}>Sessão guiada</p>
-        <h1 className={styles.title}>Modo foco</h1>
-        <p className={styles.subtitle}>
-          Escolha uma tarefa e avance um passo de cada vez.
-        </p>
-      </header>
+      <PageIntro
+        eyebrow="Sessão guiada"
+        title="Modo foco"
+        subtitle="Escolha uma tarefa e avance um passo de cada vez."
+      />
 
       {activeFocusBoost && (
-        <div className={styles.activeBoostBanner}>
-          <div className={styles.activeBoostIcon}>⚡</div>
-
-          <div>
-            <strong className={styles.activeBoostTitle}>Focus Boost ativo</strong>
-            <p className={styles.activeBoostText}>
-              Sua próxima sessão concluída ganhará +{activeFocusBoost.effect_value}% XP.
-            </p>
-          </div>
-        </div>
+        <ActiveEffectBanner
+          title="Focus Boost ativo"
+          description={`Sua próxima sessão concluída ganhará +${activeFocusBoost.effect_value}% XP.`}
+        />
       )}
 
       {error && (
@@ -439,99 +433,77 @@ export default function Focus() {
           )}
         </section>
 
-        <section className={`${styles.card} ${styles.timerCard}`}>
-          <div className={styles.timerHeader}>
-            <span className={styles.timerTag}>
-              {activeSession ? "Foco em andamento" : "Foco ativo"}
-            </span>
-          </div>
-
-          <div className={styles.timerCircle}>
-            <div className={styles.timerInner}>
-              <strong className={styles.timerText}>
-                {formatTime(remainingSeconds)}
-              </strong>
-
-              <span className={styles.timerSubtext}>
-                {selectedTask ? selectedTask.title : "Escolha uma tarefa"}
-              </span>
-            </div>
-          </div>
-
-          <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${Math.max(progressPercent, 0)}%` }}
-            />
-          </div>
-
-          <div className={styles.actions}>
-            {!isRunning && !isPaused && !sessionFinished && !activeSession && (
-              <button
-                className={styles.primaryButton}
-                onClick={handleStart}
-                disabled={loading || saving || tasks.length === 0}
-              >
-                Iniciar foco
-              </button>
-            )}
-
-            {isRunning && (
-              <>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={handlePause}
-                  disabled={saving}
-                >
-                  Pausar
-                </button>
-
-                <button
-                  className={styles.ghostButton}
-                  onClick={handleCancel}
-                  disabled={saving}
-                >
-                  Cancelar
-                </button>
-              </>
-            )}
-
-            {isPaused && (
-              <>
+        <FocusTimerCard
+          variant="full"
+          statusLabel={activeSession ? "Foco em andamento" : "Foco ativo"}
+          timeText={formatTime(remainingSeconds)}
+          taskTitle={selectedTask ? selectedTask.title : "Escolha uma tarefa"}
+          progressPercent={progressPercent}
+          helperText="Ao concluir a sessão, ela será registrada no seu histórico e somará XP ao seu progresso."
+          actions={
+            <>
+              {!isRunning && !isPaused && !sessionFinished && !activeSession && (
                 <button
                   className={styles.primaryButton}
-                  onClick={handleResume}
-                  disabled={saving}
+                  onClick={handleStart}
+                  disabled={loading || saving || tasks.length === 0}
                 >
-                  Retomar
+                  Iniciar foco
                 </button>
+              )}
 
+              {isRunning && (
+                <>
+                  <button
+                    className={styles.secondaryButton}
+                    onClick={handlePause}
+                    disabled={saving}
+                  >
+                    Pausar
+                  </button>
+
+                  <button
+                    className={styles.ghostButton}
+                    onClick={handleCancel}
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </button>
+                </>
+              )}
+
+              {isPaused && (
+                <>
+                  <button
+                    className={styles.primaryButton}
+                    onClick={handleResume}
+                    disabled={saving}
+                  >
+                    Retomar
+                  </button>
+
+                  <button
+                    className={styles.ghostButton}
+                    onClick={handleCancel}
+                    disabled={saving}
+                  >
+                    Encerrar
+                  </button>
+                </>
+              )}
+
+              {sessionFinished && (
                 <button
-                  className={styles.ghostButton}
-                  onClick={handleCancel}
+                  className={styles.primaryButton}
+                  onClick={handleComplete}
                   disabled={saving}
                 >
-                  Encerrar
+                  {saving ? "Salvando..." : "Concluir sessão"}
                 </button>
-              </>
-            )}
-
-            {sessionFinished && (
-              <button
-                className={styles.primaryButton}
-                onClick={handleComplete}
-                disabled={saving}
-              >
-                {saving ? "Salvando..." : "Concluir sessão"}
-              </button>
-            )}
-          </div>
-
-          <p className={styles.helperText}>
-            Ao concluir a sessão, ela será registrada no seu histórico e somará
-            XP ao seu progresso.
-          </p>
-        </section>
+              )}
+            </>
+          }
+        />
       </div>
     </section>
   );

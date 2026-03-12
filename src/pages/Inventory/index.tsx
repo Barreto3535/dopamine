@@ -8,6 +8,8 @@ import {
   type ActiveEffect,
 } from "../../services/shopService";
 import { equipTheme, getMySelectedThemeId } from "../../services/themeService";
+import PageIntro from "../../components/PageIntro";
+import ActiveEffectBanner from "../../components/ActiveEffectBanner";
 
 export default function Inventory() {
   const [items, setItems] = useState<UserItem[]>([]);
@@ -95,53 +97,35 @@ export default function Inventory() {
     );
   }
 
-  if (error) {
-    return (
-      <section className={styles.container}>
-        <div className={styles.error}>{error}</div>
-      </section>
-    );
-  }
-
   return (
     <section className={styles.container}>
-      <header className={styles.header}>
-        <div>
-          <p className={styles.eyebrow}>Seus itens</p>
-          <h1 className={styles.title}>Inventário</h1>
-          <p className={styles.subtitle}>
-            Veja os itens que você comprou, use boosts e equipe seus temas.
-          </p>
-        </div>
-      </header>
+      <PageIntro
+        eyebrow="Seus itens"
+        title="Inventário"
+        subtitle="Veja os itens que você comprou, use boosts e equipe seus temas."
+      />
 
       {activeEffects.length > 0 && (
-        <section className={styles.activeEffectsSection}>
-          <div className={styles.sectionHeader}>
-            <h2>Efeitos ativos</h2>
-          </div>
-
-          <div className={styles.effectsList}>
-            {activeEffects.map((effect) => (
-              <div key={effect.id} className={styles.activeEffectCard}>
-                <span className={styles.activeEffectIcon}>⚡</span>
-                <div>
-                  <strong className={styles.activeEffectTitle}>
-                    {effect.effect_type === "focus_boost"
-                      ? "Focus Boost ativo"
-                      : effect.effect_type}
-                  </strong>
-                  <p className={styles.activeEffectText}>
-                    {effect.effect_type === "focus_boost"
-                      ? `Próxima sessão de foco com +${effect.effect_value}% XP`
-                      : `Efeito ativo: ${effect.effect_value}`}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <div className={styles.activeEffectsSection}>
+          {activeEffects.map((effect) => (
+            <ActiveEffectBanner
+              key={effect.id}
+              title={
+                effect.effect_type === "focus_boost"
+                  ? "Focus Boost ativo"
+                  : effect.effect_type
+              }
+              description={
+                effect.effect_type === "focus_boost"
+                  ? `Próxima sessão de foco com +${effect.effect_value}% XP`
+                  : `Efeito ativo: ${effect.effect_value}`
+              }
+            />
+          ))}
+        </div>
       )}
+
+      {error && <div className={styles.error}>{error}</div>}
 
       {items.length === 0 ? (
         <div className={styles.emptyCard}>

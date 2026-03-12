@@ -1,7 +1,9 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.4);
+  background:
+    color-mix(in srgb, var(--color-background) 45%, black);
+  backdrop-filter: blur(3px);
   z-index: 60;
 }
 
@@ -10,10 +12,16 @@
   top: 0;
   left: 0;
   z-index: 70;
-  width: min(82vw, 320px);
+  width: min(84vw, 340px);
   height: 100vh;
-  background: var(--color-surface);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface) 100%, transparent) 0%,
+      color-mix(in srgb, var(--color-surface-soft) 100%, transparent) 100%
+    );
   box-shadow: var(--shadow-md);
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 90%, transparent);
   padding: var(--space-5);
   display: flex;
   flex-direction: column;
@@ -27,23 +35,55 @@
   gap: var(--space-3);
 }
 
+.brandBlock {
+  min-width: 0;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
+  color: var(--color-surface);
+  font-size: 0.82rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
 .brandTitle {
   color: var(--color-text);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .brandSubtitle {
-  margin-top: var(--space-1);
+  margin-top: var(--space-2);
   color: var(--color-text-muted);
   font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .closeButton {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
-  font-weight: 700;
+  color: var(--color-text);
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .statusRow {
@@ -54,23 +94,25 @@
 
 .coinsBadge,
 .boostBadge {
-  min-height: 34px;
+  min-height: 36px;
   padding: 0 var(--space-3);
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 .coinsBadge {
-  background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
-  color: #92400e;
+  background: var(--color-coin-surface);
+  color: var(--color-coin-text);
 }
 
 .boostBadge {
-  background: linear-gradient(135deg, #fefce8 0%, #eff6ff 100%);
-  color: var(--color-secondary-dark);
+  background: var(--color-boost-surface);
+  color: var(--color-boost-text);
 }
 
 .nav {
@@ -80,7 +122,7 @@
 }
 
 .link {
-  min-height: 46px;
+  min-height: 48px;
   border-radius: var(--radius-lg);
   padding: 0 var(--space-4);
   display: flex;
@@ -88,19 +130,43 @@
   color: var(--color-text-secondary);
   text-decoration: none;
   font-weight: 700;
+  background: transparent;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.link:active {
+  transform: scale(0.99);
 }
 
 .active {
-  background: rgba(88, 204, 2, 0.12);
-  color: var(--color-primary-dark);
+  background: var(--color-success-surface);
+  color: var(--color-success-text);
 }
 
 .logoutButton {
   margin-top: auto;
-  min-height: 46px;
+  min-height: 48px;
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
-  font-weight: 700;
+  color: var(--color-text);
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+@supports not (background: color-mix(in srgb, white 50%, black)) {
+  .backdrop {
+    background: rgba(17, 24, 39, 0.4);
+  }
+
+  .drawer {
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .coinsBadge,
+  .boostBadge {
+    border: 1px solid var(--color-border);
+  }
 }
 
 @media (min-width: 1024px) {

@@ -43,6 +43,7 @@ export default function AppHeader({ onMenuClick }: Props) {
       </button>
 
       <div className={styles.brand}>
+        <span className={styles.brandMark}>FQ</span>
         <strong className={styles.brandTitle}>FocusQuest</strong>
       </div>
 

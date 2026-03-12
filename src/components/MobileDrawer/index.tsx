@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import styles from "./styles.module.css";
 import { supabase } from "../../lib/supabaseClient";
+import styles from "./styles.module.css";
 import { listMyActiveEffects } from "../../services/shopService";
 import { getMyCoins } from "../../services/progressService";
 
@@ -49,8 +49,11 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
 
       <aside className={styles.drawer}>
         <div className={styles.top}>
-          <div>
-            <strong className={styles.brandTitle}>FocusQuest</strong>
+          <div className={styles.brandBlock}>
+            <div className={styles.brandRow}>
+              <span className={styles.brandMark}>FQ</span>
+              <strong className={styles.brandTitle}>FocusQuest</strong>
+            </div>
             <p className={styles.brandSubtitle}>Seu progresso diário</p>
           </div>
 
@@ -117,7 +120,7 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
               isActive ? `${styles.link} ${styles.active}` : styles.link
             }
           >
-            Loja
+            Shop
           </NavLink>
 
           <NavLink

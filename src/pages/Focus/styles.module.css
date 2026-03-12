@@ -5,41 +5,6 @@
   padding: var(--space-2) 0 var(--space-8);
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.eyebrow {
-  color: var(--color-text-muted);
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-text);
-}
-
-.subtitle {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  max-width: 640px;
-}
-
-.errorBox {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(239, 68, 68, 0.18);
-  background: rgba(239, 68, 68, 0.08);
-  color: var(--color-danger);
-}
-
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -59,6 +24,7 @@
 
 .cardHeader h2 {
   font-size: 1.1rem;
+  color: var(--color-text);
 }
 
 .stateBox {
@@ -122,8 +88,8 @@
 
 .previewTag {
   width: fit-content;
-  background: rgba(28, 176, 246, 0.12);
-  color: var(--color-secondary-dark);
+  background: var(--color-active-surface);
+  color: var(--color-active-text);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
   font-size: 0.82rem;
@@ -137,87 +103,6 @@
 .taskPreview p {
   color: var(--color-text-secondary);
   line-height: 1.6;
-}
-
-.timerCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  align-items: center;
-  text-align: center;
-  background: linear-gradient(135deg, #ecfeff 0%, #f0fdf4 100%);
-}
-
-.timerHeader {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.timerTag {
-  width: fit-content;
-  background: rgba(88, 204, 2, 0.12);
-  color: var(--color-primary-dark);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.timerCircle {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-4);
-}
-
-.timerInner {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.timerText {
-  font-size: 2.5rem;
-  line-height: 1;
-  color: var(--color-text);
-}
-
-.timerSubtext {
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  max-width: 150px;
-}
-
-.progressBar {
-  width: 100%;
-  height: 12px;
-  background: rgba(17, 24, 39, 0.08);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--color-primary) 0%,
-    var(--color-secondary) 100%
-  );
-  border-radius: var(--radius-full);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  justify-content: center;
 }
 
 .primaryButton,
@@ -244,10 +129,15 @@
   color: var(--color-text-secondary);
 }
 
-.helperText {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  max-width: 420px;
+.errorBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--color-danger);
 }
 
 @media (min-width: 900px) {
@@ -255,27 +145,4 @@
     grid-template-columns: 0.95fr 1.05fr;
     align-items: start;
   }
-}
-.activeBoostBanner {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  background: linear-gradient(135deg, #fefce8 0%, #eff6ff 100%);
-  border-radius: var(--radius-xl);
-  padding: var(--space-4);
-  box-shadow: var(--shadow-sm);
-}
-
-.activeBoostIcon {
-  font-size: 1.5rem;
-}
-
-.activeBoostTitle {
-  color: var(--color-text);
-}
-
-.activeBoostText {
-  margin-top: var(--space-1);
-  color: var(--color-text-secondary);
-  line-height: 1.6;
 }

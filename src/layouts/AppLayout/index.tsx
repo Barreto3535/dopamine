@@ -29,6 +29,7 @@ export default function AppLayout() {
 
       <div className={styles.contentArea}>
         <AppHeader onMenuClick={() => setIsDrawerOpen(true)} />
+
         <MobileDrawer
           isOpen={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
