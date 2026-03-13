@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { supabase } from "../../../lib/supabaseClient";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../../../hooks/useAuth"; // 🔥 Importar useAuth
 import styles from "./styles.module.css";
 import { listMyActiveEffects } from "../../../services/shopService";
 import { getMyCoins } from "../../../services/progressService";
+import { toastHelpers } from "../../../utils/toast"; // 🔥 Para erros
 
 export default function AppSidebar() {
-  const navigate = useNavigate();
+  const { logout } = useAuth(); // 🔥 Usar hook
   const [coins, setCoins] = useState(0);
   const [hasFocusBoost, setHasFocusBoost] = useState(false);
 
@@ -24,16 +25,16 @@ export default function AppSidebar() {
         );
       } catch (error) {
         console.error("Erro ao carregar dados da sidebar:", error);
+        toastHelpers.error("❌ Erro ao carregar dados"); // 🔥 Toast opcional
       }
     }
 
     loadSidebarData();
   }, []);
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    navigate("/");
-  }
+  const handleLogout = async () => {
+    await logout(); // 🔥 Usar hook (já tem confirmação e toast)
+  };
 
   return (
     <aside className={styles.sidebar}>
@@ -60,7 +61,6 @@ export default function AppSidebar() {
           >
             Dashboard
           </NavLink>
-
           <NavLink
             to="/tasks"
             className={({ isActive }) =>
@@ -69,7 +69,6 @@ export default function AppSidebar() {
           >
             Tarefas
           </NavLink>
-
           <NavLink
             to="/focus"
             className={({ isActive }) =>
@@ -78,7 +77,6 @@ export default function AppSidebar() {
           >
             Foco
           </NavLink>
-
           <NavLink
             to="/progress"
             className={({ isActive }) =>
@@ -87,7 +85,6 @@ export default function AppSidebar() {
           >
             Progresso
           </NavLink>
-
           <NavLink
             to="/shop"
             className={({ isActive }) =>
@@ -96,7 +93,6 @@ export default function AppSidebar() {
           >
             Shop
           </NavLink>
-
           <NavLink
             to="/inventory"
             className={({ isActive }) =>

@@ -4,6 +4,7 @@ import { getActiveFocusSession, getRemainingSeconds } from "../services/activeFo
 import { listMyActiveEffects } from "../services/shopService";
 import type { DashboardSummary } from "../types/dashboard";
 import type { ActiveEffect } from "../services/shopService";
+import { toastHelpers } from "../utils/toast"; // 🔥 IMPORTAR
 
 export function useDashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -12,7 +13,6 @@ export function useDashboard() {
   const [activeFocusRemaining, setActiveFocusRemaining] = useState<number | null>(null);
   const [activeEffects, setActiveEffects] = useState<ActiveEffect[]>([]);
 
-  // 🔥 Primeiro declaramos a função
   async function loadDashboard() {
     try {
       setLoading(true);
@@ -32,12 +32,15 @@ export function useDashboard() {
           : "Não foi possível carregar o dashboard.";
 
       setError(message);
+      
+      // 🔥 Toast de erro (opcional)
+      toastHelpers.error(`❌ ${message}`);
+      
     } finally {
       setLoading(false);
     }
   }
 
-  // 🔥 Depois usamos no useEffect
   useEffect(() => {
     loadDashboard();
   }, []);
@@ -62,18 +65,16 @@ export function useDashboard() {
     };
 
     update();
-
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // 🔥 Agora podemos retornar a função
   return {
     summary,
     loading,
     error,
     activeFocusRemaining,
     activeEffects,
-    refresh: loadDashboard // ✅ Agora está definida!
+    refresh: loadDashboard
   };
 }

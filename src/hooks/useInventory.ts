@@ -7,6 +7,8 @@ import {
   type ActiveEffect,
 } from "../services/shopService";
 import { equipTheme, getMySelectedThemeId } from "../services/themeService";
+import { toastHelpers } from "../utils/toast";
+import { useSoundEffects } from "./useSoundEffects";
 
 export function useInventory() {
   const [items, setItems] = useState<UserItem[]>([]);
@@ -16,6 +18,8 @@ export function useInventory() {
   const [usingItemId, setUsingItemId] = useState<string | null>(null);
   const [equippingThemeId, setEquippingThemeId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  const { playSuccess, playError, playBoost } = useSoundEffects();
 
   const activeEffectTypes = useMemo(
     () => new Set(activeEffects.map((effect) => effect.effect_type)),
@@ -37,50 +41,74 @@ export function useInventory() {
       setActiveEffects(effectsData);
       setSelectedThemeId(currentThemeId);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Erro ao carregar inventário."
-      );
+      const message = err instanceof Error ? err.message : "Erro ao carregar inventário.";
+      setError(message);
+      toastHelpers.error(`❌ ${message}`);
+      playError();
     } finally {
       setLoading(false);
     }
   }
 
   async function useItem(itemId: string) {
+    setUsingItemId(itemId);
+    setError(null);
+    
     try {
-      setUsingItemId(itemId);
-      setError(null);
-
+      const toastId = toastHelpers.loading(`⚡ Ativando item...`);
+      
       if (itemId === "focus_boost") {
         await useFocusBoost();
+        playBoost();
       }
 
       await loadInventory();
-      return { success: true, message: "Item ativado com sucesso!" };
+      
+      toastHelpers.dismiss(toastId);
+      toastHelpers.success(`✨ Item ativado com sucesso!`);
+      playSuccess();
+      
+      return { success: true };
+      
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Erro ao usar item.";
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
+      const message = err instanceof Error ? err.message : "Erro ao usar item.";
+      setError(message);
+      toastHelpers.error(`❌ ${message}`);
+      playError();
+      
+      return { success: false, message };
+      
     } finally {
       setUsingItemId(null);
     }
   }
 
   async function equipThemeItem(themeId: string) {
+    setEquippingThemeId(themeId);
+    setError(null);
+    
     try {
-      setEquippingThemeId(themeId);
-      setError(null);
-
+      const toastId = toastHelpers.loading(`🎨 Equipando tema...`);
+      
       await equipTheme(themeId);
-
       setSelectedThemeId(themeId);
       document.documentElement.setAttribute("data-theme", themeId);
-
       await loadInventory();
-      return { success: true, message: "Tema equipado com sucesso!" };
+      
+      toastHelpers.dismiss(toastId);
+      toastHelpers.success(`✨ Tema equipado com sucesso!`);
+      playSuccess();
+      
+      return { success: true };
+      
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Erro ao equipar tema.";
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
+      const message = err instanceof Error ? err.message : "Erro ao equipar tema.";
+      setError(message);
+      toastHelpers.error(`❌ ${message}`);
+      playError();
+      
+      return { success: false, message };
+      
     } finally {
       setEquippingThemeId(null);
     }

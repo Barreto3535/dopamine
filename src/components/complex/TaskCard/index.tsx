@@ -1,13 +1,7 @@
 import { Link } from "react-router-dom";
 import Badge from "../../base/Badge";
-import type { Task } from "../../types/task";
+import type { Task } from "../../../types/task";
 import styles from "./styles.module.css";
-
-interface TaskCardProps {
-  task: Task;
-  onSetMainTask: (taskId: string) => void;
-  onDelete: (taskId: string) => void;
-}
 
 function getEnergyLabel(value: Task["energy_level"]) {
   if (value === "low") return "Baixa energia";
@@ -21,11 +15,17 @@ function getStatusLabel(status: Task["status"]) {
   return "Pendente";
 }
 
+interface TaskCardProps {
+  task: Task;
+  onSetMainTask: (taskId: string) => void;
+  onDelete: (taskId: string) => void;
+}
+
 export default function TaskCard({ task, onSetMainTask, onDelete }: TaskCardProps) {
   const handleDelete = () => {
-    if (confirm("Tem certeza que deseja excluir esta tarefa?")) {
-      onDelete(task.id);
-    }
+    // 🔥 REMOVIDO o alert daqui! Agora só chama onDelete
+    // A confirmação será feita no hook useTasks
+    onDelete(task.id);
   };
 
   const handleSetMain = () => {
@@ -64,13 +64,11 @@ export default function TaskCard({ task, onSetMainTask, onDelete }: TaskCardProp
 
       <div className={styles.taskInfoRow}>
         <Badge variant="muted">{getEnergyLabel(task.energy_level)}</Badge>
-
         <Badge variant="muted">
           {task.due_date
             ? `Prazo: ${new Date(task.due_date).toLocaleDateString("pt-BR")}`
             : "Sem prazo"}
         </Badge>
-
         <Badge variant="muted">{task.xp_reward} XP</Badge>
       </div>
 

@@ -15,7 +15,16 @@ export default function Shop() {
     buyingId,
     error,
     handlePurchase,
+    refresh,
   } = useShop();
+
+  const onPurchase = async (item: any) => {
+    const result = await handlePurchase(item);
+    if (result.success && refresh) {
+      await refresh(); // ✅ Atualiza saldo
+    }
+    // ✅ Toast já foi mostrado no hook
+  };
 
   if (loading) {
     return (
@@ -43,12 +52,7 @@ export default function Shop() {
             item={item}
             coins={coins}
             isBuying={buyingId === item.id}
-            onPurchase={async (item) => {
-              const result = await handlePurchase(item);
-              if (result.success) {
-                alert(result.message);
-              }
-            }}
+            onPurchase={onPurchase}
           />
         ))}
       </div>

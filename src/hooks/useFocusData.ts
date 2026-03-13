@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo } from "react"; // 🔥 Importar useMemo
+import { useState, useEffect, useMemo } from "react";
 import { listTasks } from "../services/tasksService";
 import { registerFocusSession } from "../services/focusSessionsService";
 import { listMyActiveEffects } from "../services/shopService";
 import { getActiveFocusSession } from "../services/activeFocusSessionService";
 import type { Task } from "../types/task";
 import type { ActiveEffect } from "../services/shopService";
+import { toastHelpers } from "../utils/toast";
+import { useSoundEffects } from "./useSoundEffects";
 
 export function useFocusData() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -13,6 +15,8 @@ export function useFocusData() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const { playFocusComplete, playError, playNotification } = useSoundEffects();
 
   const loadData = async () => {
     try {
@@ -28,7 +32,6 @@ export function useFocusData() {
       setTasks(openTasks);
       setActiveEffects(effectsData);
 
-      // Restaurar sessão ou selecionar tarefa padrão
       const storedSession = getActiveFocusSession();
       
       if (storedSession) {
@@ -43,11 +46,12 @@ export function useFocusData() {
         setSelectedTaskId(openTasks[0].id);
       }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível carregar as tarefas."
-      );
+      const message = err instanceof Error
+        ? err.message
+        : "Não foi possível carregar as tarefas.";
+      setError(message);
+      toastHelpers.error(`❌ ${message}`);
+      playError();
     } finally {
       setLoading(false);
     }
@@ -85,7 +89,22 @@ export function useFocusData() {
       });
 
       await reloadActiveEffects();
+      
+      if (params.status === "completed") {
+        toastHelpers.success(`🎯 Sessão concluída! +5 XP`);
+        playFocusComplete();
+      } else {
+        toastHelpers.info(`⏹️ Sessão cancelada`);
+        playNotification();
+      }
+      
     } catch (err) {
+      const message = err instanceof Error
+        ? err.message
+        : "Não foi possível registrar a sessão.";
+      setError(message);
+      toastHelpers.error(`❌ ${message}`);
+      playError();
       throw err;
     } finally {
       setSaving(false);
@@ -96,7 +115,6 @@ export function useFocusData() {
     loadData();
   }, []);
 
-  // 🔥 Agora useMemo está definido
   const selectedTask = useMemo(
     () => tasks.find((task) => task.id === selectedTaskId) ?? null,
     [tasks, selectedTaskId]

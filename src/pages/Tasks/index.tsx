@@ -26,20 +26,31 @@ export default function Tasks() {
     createTask,
     setMainTask,
     deleteTask,
+    refresh,
   } = useTasks();
 
   const handleCreateTask = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     
-    await createTask({
+    const result = await createTask({
       title: formData.get("title") as string,
       description: formData.get("description") as string || undefined,
       energyLevel: formData.get("energyLevel") as "low" | "medium" | "high",
       dueDate: formData.get("dueDate") as string || null,
     });
 
-    event.currentTarget.reset();
+    if (result.success) {
+      event.currentTarget.reset();
+    }
+  };
+
+  const handleSetMainTask = async (taskId: string) => {
+    await setMainTask(taskId);
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    await deleteTask(taskId);
   };
 
   return (
@@ -109,8 +120,8 @@ export default function Tasks() {
               <TaskCard
                 key={task.id}
                 task={task}
-                onSetMainTask={setMainTask}
-                onDelete={deleteTask}
+                onSetMainTask={handleSetMainTask}
+                onDelete={handleDeleteTask}
               />
             ))}
           </div>

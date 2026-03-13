@@ -5,12 +5,13 @@ import { useFocusTimer } from "../../hooks/useFocusTimer";
 import PageIntro from "../../components/base/PageIntro";
 import Card from "../../components/base/Card";
 import Button from "../../components/base/Button";
-import Input from "../../components/base/Input";
 import Select from "../../components/base/Select";
 import ActiveEffectBanner from "../../components/complex/ActiveEffectBanner";
 import FocusTimerCard from "../../components/complex/FocusTimerCard";
 import TaskPreview from "../../components/pattern/TaskPreview";
 import ErrorDisplay from "../../components/base/ErrorDisplay";
+import { toastHelpers } from "../../utils/toast";
+import { useSoundEffects } from "../../hooks/useSoundEffects";
 
 const DURATION_OPTIONS = [
   { value: "15", label: "15 min" },
@@ -56,10 +57,25 @@ export default function Focus() {
 
   const handleStart = () => {
     if (!selectedTaskId) {
-      setError("Selecione uma tarefa antes de iniciar o foco.");
+      toastHelpers.error("Selecione uma tarefa antes de iniciar o foco."); // 🔥 Toast
       return;
     }
     startSession(selectedTaskId, selectedTask?.title ?? null, durationMinutes);
+    toastHelpers.success("🎯 Foco iniciado! Boa sessão!"); // 🔥 Toast
+    playFocusStart();
+    
+  };
+
+  const handlePause = () => {
+    pauseSession();
+    toastHelpers.info("⏸️ Sessão pausada", "⏸️"); // 🔥 Toast
+    playNotification();
+  };
+
+  const handleResume = () => {
+    resumeSession();
+    toastHelpers.success("▶️ Foco retomado!"); // 🔥 Toast
+    playFocusStart(); 
   };
 
   const handleCancel = async () => {
@@ -67,6 +83,12 @@ export default function Focus() {
       resetTimer();
       return;
     }
+
+    // 🔥 Confirm antes de cancelar
+    const confirmed = await toastHelpers.confirm(
+      "Cancelar sessão de foco? O progresso não será salvo."
+    );
+    if (!confirmed) return;
 
     try {
       await registerSession({
@@ -84,12 +106,10 @@ export default function Focus() {
       });
 
       resetTimer(activeSession.durationMinutes);
+      // ✅ Toast já foi mostrado no registerSession
+      
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível cancelar a sessão."
-      );
+      // ❌ Erro já tratado no hook
     }
   };
 
@@ -107,12 +127,10 @@ export default function Focus() {
       });
 
       resetTimer(activeSession.durationMinutes);
+      // ✅ Toast já foi mostrado no registerSession
+      
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível registrar a sessão."
-      );
+      // ❌ Erro já tratado no hook
     }
   };
 
@@ -194,7 +212,7 @@ export default function Focus() {
 
               {isRunning && (
                 <>
-                  <Button variant="secondary" onClick={pauseSession} disabled={saving}>
+                  <Button variant="secondary" onClick={handlePause} disabled={saving}>
                     Pausar
                   </Button>
                   <Button variant="ghost" onClick={handleCancel} disabled={saving}>
@@ -205,7 +223,7 @@ export default function Focus() {
 
               {isPaused && (
                 <>
-                  <Button variant="primary" onClick={resumeSession} disabled={saving}>
+                  <Button variant="primary" onClick={handleResume} disabled={saving}>
                     Retomar
                   </Button>
                   <Button variant="ghost" onClick={handleCancel} disabled={saving}>

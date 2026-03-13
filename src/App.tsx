@@ -20,6 +20,8 @@ import Inventory from "./pages/Inventory";
 
 import { checkUserStreak } from "./services/streakService";
 
+import { Toaster } from 'react-hot-toast';
+
 type GuardProps = {
   session: Session | null;
   children: ReactNode;
@@ -94,6 +96,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+    <Toaster position="top-right" />
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />

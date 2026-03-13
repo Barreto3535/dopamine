@@ -22,6 +22,16 @@ export default function Inventory() {
     equipThemeItem,
   } = useInventory();
 
+  const handleUseItem = async (itemId: string) => {
+    const result = await useItem(itemId);
+    // ✅ Toast já foi mostrado no hook
+  };
+
+  const handleEquipTheme = async (themeId: string) => {
+    const result = await equipThemeItem(themeId);
+    // ✅ Toast já foi mostrado no hook
+  };
+
   if (loading) {
     return (
       <section className={styles.container}>
@@ -63,8 +73,8 @@ export default function Inventory() {
               activeEffectTypes={activeEffectTypes}
               isUsing={usingItemId === entry.shop_items?.id}
               isEquipping={equippingThemeId === entry.shop_items?.theme_id}
-              onUseItem={useItem}
-              onEquipTheme={equipThemeItem}
+              onUseItem={handleUseItem}
+              onEquipTheme={handleEquipTheme}
             />
           ))}
         </div>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AppHeader from "../../components/navigation/AppHeader";
 import AppSidebar from "../../components/navigation/AppSidebar";
 import MobileDrawer from "../../components/navigation/MobileDrawer";
+import ConfirmToast from "../../components/pattern/ConfirmToast"; // 🔥 IMPORTAR
 import styles from "./styles.module.css";
 import { getMySelectedThemeId } from "../../services/themeService";
 
@@ -26,15 +27,17 @@ export default function AppLayout() {
   return (
     <div className={styles.layout}>
       <AppSidebar />
-
+      
       <div className={styles.contentArea}>
         <AppHeader onMenuClick={() => setIsDrawerOpen(true)} />
-
+        
         <MobileDrawer
           isOpen={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
         />
-
+        
+        <ConfirmToast />
+        
         <main className={styles.main}>
           <Outlet />
         </main>

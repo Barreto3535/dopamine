@@ -34,6 +34,7 @@ export default function TaskDetails() {
     completeStep,
     deleteStep,
     completeCurrentTask,
+    refresh,
   } = useTaskDetails();
 
   const handleCreateStep = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -41,8 +42,26 @@ export default function TaskDetails() {
     const formData = new FormData(event.currentTarget);
     const title = formData.get("stepTitle") as string;
     
-    await createStep(title);
-    event.currentTarget.reset();
+    const result = await createStep(title);
+    if (result.success) {
+      event.currentTarget.reset();
+    }
+    // ✅ Toast já foi mostrado no hook
+  };
+
+  const handleCompleteStep = async (stepId: string) => {
+    await completeStep(stepId);
+    // ✅ Toast já foi mostrado no hook
+  };
+
+  const handleDeleteStep = async (stepId: string) => {
+    await deleteStep(stepId);
+    // ✅ Toast já foi mostrado no hook
+  };
+
+  const handleCompleteTask = async () => {
+    await completeCurrentTask();
+    // ✅ Toast já foi mostrado no hook
   };
 
   if (loading) {
@@ -58,7 +77,7 @@ export default function TaskDetails() {
       <section className={styles.page}>
         <Card className={styles.stateCard}>
           <p className={styles.errorText}>Tarefa não encontrada.</p>
-          <Button variant="ghosts" as={Link} to="/tasks">
+          <Button variant="primary" as={Link} to="/tasks">
             Voltar para tarefas
           </Button>
         </Card>
@@ -69,11 +88,9 @@ export default function TaskDetails() {
   return (
     <section className={styles.page}>
       <div className={styles.topBar}>
-      <div className={styles.topBar}>
-  <Button variant="ghost" as={Link} to="/tasks">
-    ← Voltar para tarefas
-  </Button>
-</div>
+        <Button variant="ghost" as={Link} to="/tasks">
+          ← Voltar para tarefas
+        </Button>
       </div>
 
       <Card className={styles.heroCard}>
@@ -115,7 +132,7 @@ export default function TaskDetails() {
         {task.status !== "completed" && (
           <Button
             variant="primary"
-            onClick={completeCurrentTask}
+            onClick={handleCompleteTask}
             loading={completingTask}
           >
             Concluir tarefa
@@ -179,7 +196,7 @@ export default function TaskDetails() {
                       <Button
                         variant="primary"
                         size="small"
-                        onClick={() => completeStep(step.id)}
+                        onClick={() => handleCompleteStep(step.id)}
                       >
                         Concluir
                       </Button>
@@ -188,7 +205,7 @@ export default function TaskDetails() {
                     <Button
                       variant="ghost"
                       size="small"
-                      onClick={() => deleteStep(step.id)}
+                      onClick={() => handleDeleteStep(step.id)}
                     >
                       Excluir
                     </Button>

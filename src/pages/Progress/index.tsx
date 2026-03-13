@@ -42,13 +42,13 @@ export default function Progress() {
       />
 
       <section className={styles.heroGrid}>
-      <Card variant="highlight" className={styles.highlightCard}>
-  <span className={styles.highlightLabel}>XP total</span>
-  <strong className={styles.highlightValue}>{xp}</strong>
-  <p className={styles.highlightText}>
-    Seu progresso acumulado até agora.
-  </p>
-</Card>
+        <Card variant="highlight" className={styles.highlightCard}>
+          <span className={styles.highlightLabel}>XP total</span>
+          <strong className={styles.highlightValue}>{xp}</strong>
+          <p className={styles.highlightText}>
+            Seu progresso acumulado até agora.
+          </p>
+        </Card>
         <StatCard label="Nível" value={level} />
         <StatCard label="Streak" value={`🔥 ${streak}`} />
         <StatCard label="Moedas" value={coins} />

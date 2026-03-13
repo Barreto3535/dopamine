@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { supabase } from "../../../lib/supabaseClient";
+import { useAuth } from "../../../hooks/useAuth"; // 🔥 Importar useAuth
 import styles from "./styles.module.css";
 import { listMyActiveEffects } from "../../../services/shopService";
 import { getMyCoins } from "../../../services/progressService";
+import { toastHelpers } from "../../../utils/toast"; // 🔥 Para erros
 
 type Props = {
   isOpen: boolean;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export default function MobileDrawer({ isOpen, onClose }: Props) {
+  const { logout } = useAuth(); // 🔥 Usar hook
   const [coins, setCoins] = useState(0);
   const [hasFocusBoost, setHasFocusBoost] = useState(false);
 
@@ -30,16 +32,17 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
         );
       } catch (error) {
         console.error("Erro ao carregar drawer:", error);
+        toastHelpers.error("❌ Erro ao carregar dados"); // 🔥 Toast opcional
       }
     }
 
     loadDrawerData();
   }, [isOpen]);
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    onClose();
-  }
+  const handleLogout = async () => {
+    await logout(); // 🔥 Usar hook (já tem confirmação e toast)
+    onClose(); // Fecha o drawer após logout
+  };
 
   if (!isOpen) return null;
 
@@ -82,7 +85,6 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
           >
             Dashboard
           </NavLink>
-
           <NavLink
             to="/tasks"
             onClick={onClose}
@@ -92,7 +94,6 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
           >
             Tarefas
           </NavLink>
-
           <NavLink
             to="/focus"
             onClick={onClose}
@@ -102,7 +103,6 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
           >
             Foco
           </NavLink>
-
           <NavLink
             to="/progress"
             onClick={onClose}
@@ -112,7 +112,6 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
           >
             Progresso
           </NavLink>
-
           <NavLink
             to="/shop"
             onClick={onClose}
@@ -122,7 +121,6 @@ export default function MobileDrawer({ isOpen, onClose }: Props) {
           >
             Shop
           </NavLink>
-
           <NavLink
             to="/inventory"
             onClick={onClose}

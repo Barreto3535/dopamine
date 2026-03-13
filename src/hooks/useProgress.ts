@@ -12,6 +12,7 @@ import {
 } from "../services/progressService";
 import type { UserProgress } from "../types/progress";
 import type { FocusSession } from "../types/focusSession";
+import { toastHelpers } from "../utils/toast"; // 🔥 IMPORTAR
 
 export type ProgressOverview = {
   progress: UserProgress | null;
@@ -64,12 +65,16 @@ export function useProgress() {
         recentSessions,
         weeklyChart,
       });
+      
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível carregar seu progresso."
-      );
+      const message = err instanceof Error
+        ? err.message
+        : "Não foi possível carregar seu progresso.";
+      setError(message);
+      
+      // 🔥 Toast de erro (opcional - pode remover se preferir)
+      toastHelpers.error(`❌ ${message}`);
+      
     } finally {
       setLoading(false);
     }

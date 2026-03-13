@@ -1,0 +1,47 @@
+.confirmToast {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-lg);
+    max-width: 320px;
+  }
+  
+  .message {
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  
+  .actions {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: flex-end;
+  }
+  
+  .confirmButton,
+  .cancelButton {
+    min-height: 36px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+  
+  .confirmButton {
+    background: var(--color-primary);
+    color: var(--color-surface);
+  }
+  
+  .cancelButton {
+    background: var(--color-surface-muted);
+    color: var(--color-text-secondary);
+  }
+  
+  .confirmButton:hover,
+  .cancelButton:hover {
+    opacity: 0.9;
+  }
