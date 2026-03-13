@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
 import { useTaskDetails } from "../../hooks/useTaskDetails";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import Badge from "../../components/Badge";
-import ProgressBar from "../../components/ProgressBar";
-import ErrorDisplay from "../../components/ErrorDisplay";
-import StateHandler from "../../components/StateHandler";
-import TaskCounter from "../../components/TaskCounter";
+import Card from "../../components/base/Card";
+import Button from "../../components/base/Button";
+import Input from "../../components/base/Input";
+import Badge from "../../components/base/Badge";
+import ProgressBar from "../../components/base/ProgressBar";
+import ErrorDisplay from "../../components/base/ErrorDisplay";
+import StateHandler from "../../components/base/StateHandler";
 
 function getStatusLabel(status: string) {
   if (status === "completed") return "Concluída";
@@ -59,7 +58,7 @@ export default function TaskDetails() {
       <section className={styles.page}>
         <Card className={styles.stateCard}>
           <p className={styles.errorText}>Tarefa não encontrada.</p>
-          <Button variant="primary" as={Link} to="/tasks">
+          <Button variant="ghosts" as={Link} to="/tasks">
             Voltar para tarefas
           </Button>
         </Card>
@@ -70,9 +69,11 @@ export default function TaskDetails() {
   return (
     <section className={styles.page}>
       <div className={styles.topBar}>
-        <Button variant="ghost" as={Link} to="/tasks">
-          ← Voltar para tarefas
-        </Button>
+      <div className={styles.topBar}>
+  <Button variant="ghost" as={Link} to="/tasks">
+    ← Voltar para tarefas
+  </Button>
+</div>
       </div>
 
       <Card className={styles.heroCard}>
@@ -148,7 +149,7 @@ export default function TaskDetails() {
         <Card>
           <div className={styles.cardHeader}>
             <h2>Subtarefas</h2>
-            <TaskCounter count={steps.length} />
+            <Badge variant="muted">{steps.length}</Badge>
           </div>
 
           {steps.length === 0 ? (

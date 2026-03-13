@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Header from "../../components/Header";
-import Container from "../../components/Container";
+import Header from "../../components/navigation/Header";
+import Container from "../../components/layout/Container";
 import styles from "./styles.module.css";
 
 export default function MainLayout() {

@@ -1,14 +1,13 @@
 import styles from "./styles.module.css";
 import { useProgress } from "../../hooks/useProgress";
-import PageIntro from "../../components/PageIntro";
-import Card from "../../components/Card";
-import StateHandler from "../../components/StateHandler";
-import StatCard from "../../components/StatCard";
-import HighlightCard from "../../components/HighlightCard";
-import SectionHeader from "../../components/SectionHeader";
-import FocusChart from "../../components/FocusChart";
-import XPChart from "../../components/XPChart";
-import RecentSessions from "../../components/RecentSessions";
+import PageIntro from "../../components/base/PageIntro";
+import Card from "../../components/base/Card";
+import StateHandler from "../../components/base/StateHandler";
+import StatCard from "../../components/pattern/StatCard";
+import SectionHeader from "../../components/pattern/SectionHeader";
+import FocusChart from "../../components/complex/FocusChart";
+import XPChart from "../../components/complex/XPChart";
+import RecentSessions from "../../components/complex/RecentSessions";
 
 export default function Progress() {
   const { data, loading, error } = useProgress();
@@ -43,11 +42,13 @@ export default function Progress() {
       />
 
       <section className={styles.heroGrid}>
-        <HighlightCard
-          label="XP total"
-          value={xp}
-          description="Seu progresso acumulado até agora."
-        />
+      <Card variant="highlight" className={styles.highlightCard}>
+  <span className={styles.highlightLabel}>XP total</span>
+  <strong className={styles.highlightValue}>{xp}</strong>
+  <p className={styles.highlightText}>
+    Seu progresso acumulado até agora.
+  </p>
+</Card>
         <StatCard label="Nível" value={level} />
         <StatCard label="Streak" value={`🔥 ${streak}`} />
         <StatCard label="Moedas" value={coins} />

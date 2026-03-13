@@ -8,15 +8,15 @@ import {
   formatStreak,
   formatLevel
 } from "../../utils/formatters";
-import StateHandler from "../../components/StateHandler";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import Greeting from "../../components/Greeting";
-import Badge from "../../components/Badge";
-import ProgressBar from "../../components/ProgressBar";
-import StatCard from "../../components/StatCard";
-import ActiveEffectBanner from "../../components/ActiveEffectBanner";
-import FocusTimerCard from "../../components/FocusTimerCard";
+import StateHandler from "../../components/base/StateHandler";
+import Card from "../../components/base/Card";
+import Button from "../../components/base/Button";
+import Greeting from "../../components/pattern/Greeting";
+import Badge from "../../components/base/Badge";
+import ProgressBar from "../../components/base/ProgressBar";
+import StatCard from "../../components/pattern/StatCard";
+import ActiveEffectBanner from "../../components/complex/ActiveEffectBanner";
+import FocusTimerCard from "../../components/complex/FocusTimerCard";
 
 export default function Dashboard() {
   const {

@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
-import AppHeader from "../../components/AppHeader";
-import AppSidebar from "../../components/AppSidebar";
-import MobileDrawer from "../../components/MobileDrawer";
+import AppHeader from "../../components/navigation/AppHeader";
+import AppSidebar from "../../components/navigation/AppSidebar";
+import MobileDrawer from "../../components/navigation/MobileDrawer";
 import styles from "./styles.module.css";
 import { getMySelectedThemeId } from "../../services/themeService";
 

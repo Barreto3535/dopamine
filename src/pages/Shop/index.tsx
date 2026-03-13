@@ -1,11 +1,11 @@
 import styles from "./styles.module.css";
 import { useShop } from "../../hooks/useShop";
-import PageIntro from "../../components/PageIntro";
-import Card from "../../components/Card";
-import StateHandler from "../../components/StateHandler";
-import ErrorDisplay from "../../components/ErrorDisplay";
-import CoinsDisplay from "../../components/CoinsDisplay";
-import ShopItemCard from "../../components/ShopItemCard";
+import PageIntro from "../../components/base/PageIntro";
+import Card from "../../components/base/Card";
+import StateHandler from "../../components/base/StateHandler";
+import ErrorDisplay from "../../components/base/ErrorDisplay";
+import CoinsDisplay from "../../components/pattern/CoinsDisplay";
+import ShopItemCard from "../../components/complex/ShopItemCard";
 
 export default function Shop() {
   const {

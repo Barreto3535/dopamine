@@ -1,14 +1,14 @@
 import { useTasks } from "../../hooks/useTasks";
-import PageIntro from "../../components/PageIntro";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import Textarea from "../../components/Textarea";
-import Select from "../../components/Select";
-import TaskCard from "../../components/TaskCard";
-import TaskCounter from "../../components/TaskCounter";
-import StateHandler from "../../components/StateHandler";
-import ErrorDisplay from "../../components/ErrorDisplay";
+import PageIntro from "../../components/base/PageIntro";
+import Card from "../../components/base/Card";
+import Button from "../../components/base/Button";
+import Input from "../../components/base/Input";
+import Textarea from "../../components/base/Textarea";
+import Select from "../../components/base/Select";
+import TaskCard from "../../components/complex/TaskCard";
+import Badge from "../../components/base/Badge";
+import StateHandler from "../../components/base/StateHandler";
+import ErrorDisplay from "../../components/base/ErrorDisplay";
 import styles from "./styles.module.css";
 
 const ENERGY_OPTIONS = [
@@ -100,7 +100,7 @@ export default function Tasks() {
       <section className={styles.listSection}>
         <div className={styles.cardHeader}>
           <h2>Lista de tarefas</h2>
-          <TaskCounter count={tasks.length} />
+          <Badge variant="muted">{tasks.length}</Badge>
         </div>
 
         <StateHandler loading={loading} isEmpty={tasks.length === 0}>

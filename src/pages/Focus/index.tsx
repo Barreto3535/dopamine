@@ -2,15 +2,15 @@ import { useEffect } from "react";
 import styles from "./styles.module.css";
 import { useFocusData } from "../../hooks/useFocusData";
 import { useFocusTimer } from "../../hooks/useFocusTimer";
-import PageIntro from "../../components/PageIntro";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import Select from "../../components/Select";
-import ActiveEffectBanner from "../../components/ActiveEffectBanner";
-import FocusTimerCard from "../../components/FocusTimerCard";
-import TaskPreview from "../../components/TaskPreview";
-import ErrorDisplay from "../../components/ErrorDisplay";
+import PageIntro from "../../components/base/PageIntro";
+import Card from "../../components/base/Card";
+import Button from "../../components/base/Button";
+import Input from "../../components/base/Input";
+import Select from "../../components/base/Select";
+import ActiveEffectBanner from "../../components/complex/ActiveEffectBanner";
+import FocusTimerCard from "../../components/complex/FocusTimerCard";
+import TaskPreview from "../../components/pattern/TaskPreview";
+import ErrorDisplay from "../../components/base/ErrorDisplay";
 
 const DURATION_OPTIONS = [
   { value: "15", label: "15 min" },

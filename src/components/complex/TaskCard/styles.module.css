@@ -1,0 +1,94 @@
+.taskCard {
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .taskTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  
+  .taskMeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  
+  .taskTitleLink {
+    text-decoration: none;
+  }
+  
+  .taskTitle {
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin: 0;
+  }
+  
+  .taskDescription {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  .taskInfoRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  
+  .deleteButton {
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    padding: 0 var(--space-4);
+    background: var(--color-surface-muted);
+    color: var(--color-text-secondary);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .deleteButton:hover {
+    opacity: 0.8;
+  }
+  
+  .secondaryButton {
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    padding: 0 var(--space-4);
+    background: var(--color-secondary);
+    color: var(--color-surface);
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .secondaryButton:hover {
+    opacity: 0.9;
+  }
+  .taskTitleLink {
+    text-decoration: none;
+    display: block; /* 🔥 Faz o link ocupar todo o espaço */
+    width: fit-content;
+  }
+  
+  .taskTitleLink:hover .taskTitle {
+    color: var(--color-primary); /* 🔥 Feedback visual no hover */
+    text-decoration: underline;
+  }
+  
+  .taskTitle {
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin: 0;
+    transition: color 0.2s;
+  }

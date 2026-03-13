@@ -1,34 +1,24 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-6); /* Aumentei de 5 para 6 */
   padding: var(--space-2) 0 var(--space-8);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .topBar {
   display: flex;
   align-items: center;
+  margin-bottom: var(--space-2); /* Reduzi */
 }
 
-.backLink {
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.heroCard,
-.card,
-.stateCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--space-5);
-  box-shadow: var(--shadow-sm);
-}
-
+/* Hero Card - primeiro card */
 .heroCard {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5); /* Aumentei o espaçamento interno */
 }
 
 .heroHeader {
@@ -36,6 +26,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--space-3);
+  margin-bottom: var(--space-1);
 }
 
 .heroMeta {
@@ -44,52 +35,32 @@
   gap: var(--space-2);
 }
 
-.statusBadge,
-.mainBadge,
-.infoPill {
-  border-radius: var(--radius-full);
-  padding: var(--space-2) var(--space-3);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.statusBadge {
-  background: var(--color-surface-muted);
-  color: var(--color-text-secondary);
-}
-
-.mainBadge {
-  background: rgba(88, 204, 2, 0.12);
-  color: var(--color-primary-dark);
-}
-
 .title {
   font-size: 2rem;
   font-weight: 800;
   color: var(--color-text);
-  line-height: 1.1;
+  line-height: 1.2;
+  margin: var(--space-1) 0; /* Ajustei margem */
 }
 
 .description {
   color: var(--color-text-secondary);
   line-height: 1.6;
+  margin: var(--space-2) 0; /* Adicionei margem vertical */
 }
 
 .infoRow {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-.infoPill {
-  background: var(--color-surface-soft);
-  color: var(--color-text-secondary);
+  margin: var(--space-2) 0; /* Adicionei margem */
 }
 
 .progressBlock {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3); /* Aumentei */
+  margin: var(--space-3) 0; /* Adicionei margem */
 }
 
 .progressInfo {
@@ -99,106 +70,48 @@
   color: var(--color-text-secondary);
 }
 
-.progressBar {
-  width: 100%;
-  height: 12px;
-  background: var(--color-surface-muted);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+/* Grid de dois cards */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6); /* Aumentei o gap entre os cards */
+  margin-top: var(--space-2);
 }
 
-.progressFill {
-  height: 100%;
-  background: var(--color-primary);
-  border-radius: var(--radius-full);
-}
-
-.primaryButton,
-.secondaryButton,
-.stepActionButton,
-.stepDeleteButton {
-  min-height: 44px;
-  border-radius: var(--radius-md);
-  padding: 0 var(--space-4);
-  font-weight: 700;
-}
-
-.primaryButton {
-  background: var(--color-primary);
-  color: var(--color-surface);
-}
-
-.secondaryButton {
-  background: var(--color-secondary);
-  color: var(--color-surface);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.field label {
-  font-weight: 600;
-  color: var(--color-text-secondary);
-}
-
-.field input {
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text);
-  padding: var(--space-3) var(--space-4);
-}
-
+/* Cards internos */
 .cardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5); /* Aumentei */
 }
 
 .cardHeader h2 {
-  font-size: 1.1rem;
+  font-size: 1.25rem; /* Aumentei */
+  color: var(--color-text);
+  margin: 0;
 }
 
-.counter {
-  min-width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  background: var(--color-surface-muted);
-  color: var(--color-text-secondary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
+/* Formulário */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5); /* Aumentei */
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
+/* Lista de subtarefas */
 .stepsList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4); /* Aumentei */
 }
 
 .stepItem {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
+  gap: var(--space-4);
+  padding: var(--space-5); /* Aumentei */
   border-radius: var(--radius-lg);
   background: var(--color-surface-soft);
 }
@@ -206,12 +119,12 @@
 .stepContent {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4); /* Aumentei */
 }
 
 .stepIndicator {
-  width: 14px;
-  height: 14px;
+  width: 20px; /* Aumentei */
+  height: 20px; /* Aumentei */
   border-radius: var(--radius-full);
   background: var(--color-border-strong);
   flex-shrink: 0;
@@ -223,51 +136,41 @@
 
 .stepTitle {
   color: var(--color-text);
+  font-size: 1.1rem; /* Aumentei */
 }
 
 .stepStatus {
-  margin-top: var(--space-1);
+  margin-top: var(--space-2); /* Aumentei */
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .stepActions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.stepActionButton {
-  background: var(--color-primary);
-  color: var(--color-surface);
-}
-
-.stepDeleteButton {
-  background: var(--color-surface-muted);
-  color: var(--color-text-secondary);
+  gap: var(--space-3); /* Aumentei */
+  margin-top: var(--space-2); /* Adicionei */
 }
 
 .emptyBox {
   color: var(--color-text-secondary);
   line-height: 1.6;
+  padding: var(--space-4) 0; /* Adicionei padding */
 }
 
-.errorBox {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(239, 68, 68, 0.18);
-  background: rgba(239, 68, 68, 0.08);
-  color: var(--color-danger);
+/* Estado de erro/loading */
+.stateCard {
+  padding: var(--space-8); /* Aumentei */
+  text-align: center;
 }
 
 .errorText {
   color: var(--color-danger);
   font-weight: 700;
+  margin-bottom: var(--space-4); /* Aumentei */
 }
 
+/* Responsividade */
 @media (min-width: 900px) {
   .grid {
     grid-template-columns: 0.9fr 1.1fr;
@@ -278,5 +181,9 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .stepActions {
+    margin-top: 0;
   }
 }

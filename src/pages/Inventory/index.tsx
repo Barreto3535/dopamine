@@ -1,11 +1,11 @@
 import { useInventory } from "../../hooks/useInventory";
-import PageIntro from "../../components/PageIntro";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import InventoryItemCard from "../../components/InventoryItemCard";
-import ActiveEffectsList from "../../components/ActiveEffectsList";
-import StateHandler from "../../components/StateHandler";
-import ErrorDisplay from "../../components/ErrorDisplay";
+import PageIntro from "../../components/base/PageIntro";
+import Card from "../../components/base/Card";
+import Button from "../../components/base/Button";
+import InventoryItemCard from "../../components/complex/InventoryItemCard";
+import ActiveEffectsList from "../../components/complex/ActiveEffectsList";
+import StateHandler from "../../components/base/StateHandler";
+import ErrorDisplay from "../../components/base/ErrorDisplay";
 import styles from "./styles.module.css";
 
 export default function Inventory() {
