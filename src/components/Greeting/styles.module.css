@@ -1,0 +1,4 @@
+.greeting {
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+  }
