@@ -7,9 +7,10 @@ import {
   formatTime,
   formatStreak,
   formatLevel
-  // 🔥 Remove formatCurrentXP
 } from "../../utils/formatters";
 import StateHandler from "../../components/StateHandler";
+import Card from "../../components/Card";
+import Button from "../../components/Button";
 import Greeting from "../../components/Greeting";
 import Badge from "../../components/Badge";
 import ProgressBar from "../../components/ProgressBar";
@@ -45,7 +46,7 @@ export default function Dashboard() {
     <StateHandler loading={loading} error={error}>
       <section className={styles.dashboard}>
         {/* Hero Section */}
-        <div className={styles.heroCard}>
+        <Card variant="hero" className={styles.heroCard}>
           <div className={styles.heroTop}>
             <div>
               <Greeting displayName={displayName} />
@@ -61,16 +62,14 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* 🔥 Agora mostra só o XP como número */}
           <ProgressBar
             progress={levelProgress}
-            showXPInfo={true}
+            showXPInfo
             xpLabel="XP atual"
-            xpValue={xp}  // Passa o XP direto como número
+            xpValue={xp}
           />
-        </div>
+        </Card>
 
-        {/* Resto do componente igual... */}
         {activeFocusBoost && (
           <ActiveEffectBanner
             title="Focus Boost ativo"
@@ -78,8 +77,9 @@ export default function Dashboard() {
           />
         )}
 
+        {/* Main Mission */}
         {mainTask ? (
-          <div className={styles.mainMission}>
+          <Card className={styles.mainMission}>
             <div className={styles.missionHeader}>
               <Badge variant="success">Missão principal</Badge>
               <span className={styles.missionSteps}>
@@ -104,19 +104,19 @@ export default function Dashboard() {
             />
 
             <div className={styles.missionActions}>
-              <Link to={`/tasks/${mainTask.id}`} className={styles.primaryLinkButton}>
+              <Button variant="primary" as={Link} to={`/tasks/${mainTask.id}`}>
                 Ver tarefa
-              </Link>
+              </Button>
 
               {mainTask.status !== "completed" && (
-                <Link to="/focus" className={styles.secondaryLinkButton}>
+                <Button variant="secondary" as={Link} to="/focus">
                   Iniciar foco
-                </Link>
+                </Button>
               )}
             </div>
-          </div>
+          </Card>
         ) : (
-          <div className={styles.emptyMission}>
+          <Card className={styles.emptyMission}>
             <div className={styles.missionHeader}>
               <Badge variant="success">Missão principal</Badge>
             </div>
@@ -129,13 +129,14 @@ export default function Dashboard() {
             </p>
 
             <div className={styles.missionActions}>
-              <Link to="/tasks" className={styles.primaryLinkButton}>
+              <Button variant="primary" as={Link} to="/tasks">
                 Ir para tarefas
-              </Link>
+              </Button>
             </div>
-          </div>
+          </Card>
         )}
 
+        {/* Stats Grid */}
         <div className={styles.statsGrid}>
           <StatCard
             label="XP hoje"
@@ -154,8 +155,9 @@ export default function Dashboard() {
           />
         </div>
 
+        {/* Bottom Grid */}
         <div className={styles.bottomGrid}>
-          <article className={styles.listCard}>
+          <Card>
             <div className={styles.cardHeader}>
               <h3>Resumo do dia</h3>
               <Badge variant="muted">Hoje</Badge>
@@ -177,11 +179,11 @@ export default function Dashboard() {
             </ul>
 
             <div className={styles.cardActions}>
-              <Link to="/tasks" className={styles.secondaryLinkButton}>
+              <Button variant="secondary" as={Link} to="/tasks">
                 Ver tarefas
-              </Link>
+              </Button>
             </div>
-          </article>
+          </Card>
 
           <FocusTimerCard
             variant="compact"
@@ -199,16 +201,13 @@ export default function Dashboard() {
                 : "Escolha uma tarefa, respire e comece sem pressão."
             }
             actions={
-              <Link
+              <Button
+                variant={activeFocusRemaining ? "primary" : "secondary"}
+                as={Link}
                 to="/focus"
-                className={
-                  activeFocusRemaining
-                    ? styles.primaryLinkButton
-                    : styles.secondaryLinkButton
-                }
               >
                 {activeFocusRemaining ? "Continuar foco" : "Iniciar foco"}
-              </Link>
+              </Button>
             }
           />
         </div>

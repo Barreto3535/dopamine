@@ -1,0 +1,80 @@
+.formCard {
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .cardHeader {
+    margin-bottom: var(--space-4);
+  }
+  
+  .cardHeader h2 {
+    font-size: 1.1rem;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .formRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .field label {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  
+  .field input,
+  .field textarea,
+  .field select {
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: var(--space-3) var(--space-4);
+    width: 100%;
+  }
+  
+  .field textarea {
+    resize: vertical;
+    min-height: 96px;
+  }
+  
+  .primaryButton {
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    padding: 0 var(--space-4);
+    background: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .primaryButton:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  
+  .primaryButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  @media (min-width: 768px) {
+    .formRow {
+      grid-template-columns: 1fr 1fr;
+    }
+  }

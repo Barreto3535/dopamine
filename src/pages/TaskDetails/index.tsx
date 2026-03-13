@@ -1,194 +1,55 @@
-import { useEffect, useMemo, useState } from "react";
-import type { FormEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./styles.module.css";
-import {
-  completeTask,
-  completeTaskStep,
-  createTaskStep,
-  deleteTaskStep,
-  getTaskById,
-  listTaskSteps,
-} from "../../services/tasksService";
-import type { Task, TaskStep } from "../../types/task";
+import { useTaskDetails } from "../../hooks/useTaskDetails";
+import Card from "../../components/Card";
+import Button from "../../components/Button";
+import Input from "../../components/Input";
+import Badge from "../../components/Badge";
+import ProgressBar from "../../components/ProgressBar";
+import ErrorDisplay from "../../components/ErrorDisplay";
+import StateHandler from "../../components/StateHandler";
+import TaskCounter from "../../components/TaskCounter";
+
+function getStatusLabel(status: string) {
+  if (status === "completed") return "Concluída";
+  if (status === "in_progress") return "Em andamento";
+  return "Pendente";
+}
+
+function getEnergyLabel(value: string) {
+  if (value === "low") return "Baixa energia";
+  if (value === "high") return "Alta energia";
+  return "Energia média";
+}
 
 export default function TaskDetails() {
-  const { taskId } = useParams<{ taskId: string }>();
+  const {
+    task,
+    steps,
+    loading,
+    submittingStep,
+    completingTask,
+    error,
+    progress,
+    createStep,
+    completeStep,
+    deleteStep,
+    completeCurrentTask,
+  } = useTaskDetails();
 
-  const [task, setTask] = useState<Task | null>(null);
-  const [steps, setSteps] = useState<TaskStep[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [submittingStep, setSubmittingStep] = useState(false);
-  const [completingTask, setCompletingTask] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const [stepTitle, setStepTitle] = useState("");
-
-  useEffect(() => {
-    async function loadPage() {
-      if (!taskId) {
-        setError("Tarefa não encontrada.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        const [taskData, stepsData] = await Promise.all([
-          getTaskById(taskId),
-          listTaskSteps(taskId),
-        ]);
-
-        if (!taskData) {
-          setError("Tarefa não encontrada.");
-          setLoading(false);
-          return;
-        }
-
-        setTask(taskData);
-        setSteps(stepsData);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Não foi possível carregar a tarefa."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadPage();
-  }, [taskId]);
-
-  const progress = useMemo(() => {
-    if (steps.length === 0) {
-      return task?.status === "completed" ? 100 : 0;
-    }
-
-    const completed = steps.filter((step) => step.is_completed).length;
-    return Math.round((completed / steps.length) * 100);
-  }, [steps, task?.status]);
-
-  async function reloadTaskData() {
-    if (!taskId) return;
-
-    const [taskData, stepsData] = await Promise.all([
-      getTaskById(taskId),
-      listTaskSteps(taskId),
-    ]);
-
-    setTask(taskData);
-    setSteps(stepsData);
-  }
-
-  async function handleCreateStep(event: FormEvent<HTMLFormElement>) {
+  const handleCreateStep = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (!taskId || !stepTitle.trim()) return;
-
-    try {
-      setSubmittingStep(true);
-      setError(null);
-
-      const newStep = await createTaskStep({
-        task_id: taskId,
-        title: stepTitle.trim(),
-        order_index: steps.length,
-      });
-
-      setSteps((prev) => [...prev, newStep]);
-      setStepTitle("");
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível criar a subtarefa."
-      );
-    } finally {
-      setSubmittingStep(false);
-    }
-  }
-
-  async function handleCompleteStep(stepId: string) {
-    try {
-      setError(null);
-      await completeTaskStep(stepId);
-      await reloadTaskData();
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível concluir a subtarefa."
-      );
-    }
-  }
-
-  async function handleDeleteStep(stepId: string) {
-    try {
-      setError(null);
-      await deleteTaskStep(stepId);
-      setSteps((prev) => prev.filter((step) => step.id !== stepId));
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível excluir a subtarefa."
-      );
-    }
-  }
-
-  async function handleCompleteTask() {
-    if (!taskId) return;
-
-    try {
-      setCompletingTask(true);
-      setError(null);
-
-      await completeTask(taskId);
-      await reloadTaskData();
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Não foi possível concluir a tarefa."
-      );
-    } finally {
-      setCompletingTask(false);
-    }
-  }
-
-  function getStatusLabel(status: Task["status"]) {
-    if (status === "completed") return "Concluída";
-    if (status === "in_progress") return "Em andamento";
-    return "Pendente";
-  }
-
-  function getEnergyLabel(value: Task["energy_level"]) {
-    if (value === "low") return "Baixa energia";
-    if (value === "high") return "Alta energia";
-    return "Energia média";
-  }
+    const formData = new FormData(event.currentTarget);
+    const title = formData.get("stepTitle") as string;
+    
+    await createStep(title);
+    event.currentTarget.reset();
+  };
 
   if (loading) {
     return (
       <section className={styles.page}>
-        <div className={styles.stateCard}>Carregando tarefa...</div>
-      </section>
-    );
-  }
-
-  if (error && !task) {
-    return (
-      <section className={styles.page}>
-        <div className={styles.stateCard}>
-          <p className={styles.errorText}>{error}</p>
-          <Link to="/tasks" className={styles.backLink}>
-            Voltar para tarefas
-          </Link>
-        </div>
+        <StateHandler loading={true} />
       </section>
     );
   }
@@ -196,12 +57,12 @@ export default function TaskDetails() {
   if (!task) {
     return (
       <section className={styles.page}>
-        <div className={styles.stateCard}>
+        <Card className={styles.stateCard}>
           <p className={styles.errorText}>Tarefa não encontrada.</p>
-          <Link to="/tasks" className={styles.backLink}>
+          <Button variant="primary" as={Link} to="/tasks">
             Voltar para tarefas
-          </Link>
-        </div>
+          </Button>
+        </Card>
       </section>
     );
   }
@@ -209,17 +70,17 @@ export default function TaskDetails() {
   return (
     <section className={styles.page}>
       <div className={styles.topBar}>
-        <Link to="/tasks" className={styles.backLink}>
+        <Button variant="ghost" as={Link} to="/tasks">
           ← Voltar para tarefas
-        </Link>
+        </Button>
       </div>
 
-      <div className={styles.heroCard}>
+      <Card className={styles.heroCard}>
         <div className={styles.heroHeader}>
           <div className={styles.heroMeta}>
-            <span className={styles.statusBadge}>{getStatusLabel(task.status)}</span>
+            <Badge variant="muted">{getStatusLabel(task.status)}</Badge>
             {task.is_main_task && (
-              <span className={styles.mainBadge}>Missão principal</span>
+              <Badge variant="success">Missão principal</Badge>
             )}
           </div>
         </div>
@@ -233,13 +94,13 @@ export default function TaskDetails() {
         </p>
 
         <div className={styles.infoRow}>
-          <span className={styles.infoPill}>{getEnergyLabel(task.energy_level)}</span>
-          <span className={styles.infoPill}>
+          <Badge variant="muted">{getEnergyLabel(task.energy_level)}</Badge>
+          <Badge variant="muted">
             {task.due_date
               ? `Prazo: ${new Date(task.due_date).toLocaleDateString("pt-BR")}`
               : "Sem prazo"}
-          </span>
-          <span className={styles.infoPill}>{task.xp_reward} XP</span>
+          </Badge>
+          <Badge variant="muted">{task.xp_reward} XP</Badge>
         </div>
 
         <div className={styles.progressBlock}>
@@ -247,68 +108,47 @@ export default function TaskDetails() {
             <span>Progresso</span>
             <strong>{progress}%</strong>
           </div>
-
-          <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${progress}%` }}
-            />
-          </div>
+          <ProgressBar progress={progress} />
         </div>
 
         {task.status !== "completed" && (
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={handleCompleteTask}
-            disabled={completingTask}
+          <Button
+            variant="primary"
+            onClick={completeCurrentTask}
+            loading={completingTask}
           >
-            {completingTask ? "Concluindo..." : "Concluir tarefa"}
-          </button>
+            Concluir tarefa
+          </Button>
         )}
-      </div>
+      </Card>
 
-      {error && (
-        <div className={styles.errorBox}>
-          <span>⚠️</span>
-          <span>{error}</span>
-        </div>
-      )}
+      {error && <ErrorDisplay message={error} />}
 
       <div className={styles.grid}>
-        <section className={styles.card}>
+        <Card>
           <div className={styles.cardHeader}>
             <h2>Adicionar subtarefa</h2>
           </div>
 
           <form onSubmit={handleCreateStep} className={styles.form}>
-            <div className={styles.field}>
-              <label htmlFor="stepTitle">Título da subtarefa</label>
-              <input
-                id="stepTitle"
-                type="text"
-                placeholder="Ex: Abrir material do curso"
-                value={stepTitle}
-                onChange={(event) => setStepTitle(event.target.value)}
-                disabled={submittingStep}
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className={styles.secondaryButton}
+            <Input
+              name="stepTitle"
+              label="Título da subtarefa"
+              placeholder="Ex: Abrir material do curso"
               disabled={submittingStep}
-            >
-              {submittingStep ? "Adicionando..." : "Adicionar subtarefa"}
-            </button>
-          </form>
-        </section>
+              required
+            />
 
-        <section className={styles.card}>
+            <Button type="submit" variant="secondary" loading={submittingStep}>
+              Adicionar subtarefa
+            </Button>
+          </form>
+        </Card>
+
+        <Card>
           <div className={styles.cardHeader}>
             <h2>Subtarefas</h2>
-            <span className={styles.counter}>{steps.length}</span>
+            <TaskCounter count={steps.length} />
           </div>
 
           {steps.length === 0 ? (
@@ -335,28 +175,28 @@ export default function TaskDetails() {
 
                   <div className={styles.stepActions}>
                     {!step.is_completed && (
-                      <button
-                        type="button"
-                        className={styles.stepActionButton}
-                        onClick={() => handleCompleteStep(step.id)}
+                      <Button
+                        variant="primary"
+                        size="small"
+                        onClick={() => completeStep(step.id)}
                       >
                         Concluir
-                      </button>
+                      </Button>
                     )}
 
-                    <button
-                      type="button"
-                      className={styles.stepDeleteButton}
-                      onClick={() => handleDeleteStep(step.id)}
+                    <Button
+                      variant="ghost"
+                      size="small"
+                      onClick={() => deleteStep(step.id)}
                     >
                       Excluir
-                    </button>
+                    </Button>
                   </div>
                 </li>
               ))}
             </ul>
           )}
-        </section>
+        </Card>
       </div>
     </section>
   );

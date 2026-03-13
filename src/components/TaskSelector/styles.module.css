@@ -1,0 +1,25 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .field label {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  
+  .field select {
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: var(--space-3) var(--space-4);
+    width: 100%;
+  }
+  
+  .stateBox {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    padding: var(--space-3) 0;
+  }

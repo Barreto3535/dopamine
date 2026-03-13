@@ -1,0 +1,74 @@
+.card {
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .cardTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  
+  .icon {
+    font-size: 2rem;
+  }
+  
+  .meta {
+    display: flex;
+    align-items: center;
+  }
+  
+  .typeBadge {
+    background: var(--color-surface-muted);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  
+  .cardTitle {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    margin: 0;
+  }
+  
+  .description {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  .price {
+    font-weight: 800;
+    color: var(--color-primary-dark);
+    margin-top: var(--space-2);
+  }
+  
+  .buyButton {
+    margin-top: var(--space-2);
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-surface);
+    font-weight: 700;
+    padding: 0 var(--space-4);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .buyButton:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  
+  .buyButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }

@@ -1,0 +1,40 @@
+.primaryButton,
+.secondaryButton,
+.ghostButton {
+  min-height: 46px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.primaryButton {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.secondaryButton {
+  background: var(--color-secondary);
+  color: var(--color-surface);
+}
+
+.ghostButton {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-strong);
+}
+
+.primaryButton:hover:not(:disabled),
+.secondaryButton:hover:not(:disabled),
+.ghostButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled,
+.ghostButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

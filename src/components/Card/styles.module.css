@@ -1,0 +1,14 @@
+.card {
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .hero {
+    background: var(--gradient-hero);
+  }
+  
+  .highlight {
+    background: var(--gradient-highlight-card);
+  }

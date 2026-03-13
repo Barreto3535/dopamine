@@ -1,0 +1,9 @@
+.coinsBox {
+    width: fit-content;
+    background: var(--color-coin-surface);
+    color: var(--color-coin-text);
+    font-weight: 800;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm);
+  }

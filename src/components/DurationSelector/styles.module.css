@@ -1,0 +1,42 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .field label {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  
+  .durationButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  
+  .durationButton {
+    min-height: 42px;
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--color-surface-muted);
+    color: var(--color-text-secondary);
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .durationButton:hover:not(:disabled) {
+    background: var(--color-surface-soft);
+  }
+  
+  .durationButtonActive {
+    background: var(--color-secondary);
+    color: var(--color-surface);
+  }
+  
+  .durationButtonActive:hover:not(:disabled) {
+    background: var(--color-secondary);
+    opacity: 0.9;
+  }

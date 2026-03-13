@@ -1,10 +1,11 @@
 import { useInventory } from "../../hooks/useInventory";
 import PageIntro from "../../components/PageIntro";
-import InventoryLoading from "../../components/InventoryLoading";
-import InventoryEmpty from "../../components/InventoryEmpty";
-import ActiveEffectsList from "../../components/ActiveEffectsList";
-import ErrorDisplay from "../../components/ErrorDisplay";
+import Card from "../../components/Card";
+import Button from "../../components/Button";
 import InventoryItemCard from "../../components/InventoryItemCard";
+import ActiveEffectsList from "../../components/ActiveEffectsList";
+import StateHandler from "../../components/StateHandler";
+import ErrorDisplay from "../../components/ErrorDisplay";
 import styles from "./styles.module.css";
 
 export default function Inventory() {
@@ -22,22 +23,12 @@ export default function Inventory() {
   } = useInventory();
 
   if (loading) {
-    return <InventoryLoading />;
+    return (
+      <section className={styles.container}>
+        <StateHandler loading={true} />
+      </section>
+    );
   }
-
-  const handleUseItem = async (itemId: string) => {
-    const result = await useItem(itemId);
-    if (result.success) {
-      alert(result.message);
-    }
-  };
-
-  const handleEquipTheme = async (themeId: string) => {
-    const result = await equipThemeItem(themeId);
-    if (result.success) {
-      alert(result.message);
-    }
-  };
 
   return (
     <section className={styles.container}>
@@ -52,7 +43,16 @@ export default function Inventory() {
       {error && <ErrorDisplay message={error} />}
 
       {items.length === 0 ? (
-        <InventoryEmpty />
+        <Card className={styles.emptyCard}>
+          <h2>Nada por aqui ainda</h2>
+          <p>
+            Você ainda não possui itens no inventário. Compre algo na loja para
+            começar a montar sua coleção.
+          </p>
+          <Button variant="primary" onClick={() => window.location.href = "/shop"}>
+            Ir para loja
+          </Button>
+        </Card>
       ) : (
         <div className={styles.grid}>
           {items.map((entry) => (
@@ -63,8 +63,8 @@ export default function Inventory() {
               activeEffectTypes={activeEffectTypes}
               isUsing={usingItemId === entry.shop_items?.id}
               isEquipping={equippingThemeId === entry.shop_items?.theme_id}
-              onUseItem={handleUseItem}
-              onEquipTheme={handleEquipTheme}
+              onUseItem={useItem}
+              onEquipTheme={equipThemeItem}
             />
           ))}
         </div>
